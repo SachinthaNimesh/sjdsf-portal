@@ -1,0 +1,395 @@
+openapi: 3.0.0
+info:
+  title: Employee Management API
+  description: API for managing employees
+  version: 1.0.0
+paths:
+  /moods:
+    post:
+      summary: Create a new mood
+      tags:
+        - moods
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Mood'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mood'
+  /moods/{id}:
+    get:
+      summary: Get a mood by ID
+      tags:
+        - moods
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mood'
+  /students:
+    get:
+      summary: Get all students
+      tags:
+        - students
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Student'
+    post:
+      summary: Create a new student
+      tags:
+        - students
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+  /students/{id}:
+    get:
+      summary: Get a student by ID
+      tags:
+        - students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+    put:
+      summary: Update a student by ID
+      tags:
+        - students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+    delete:
+      summary: Delete a student by ID
+      tags:
+        - students
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+  /supervisors:
+    get:
+      summary: Get all supervisors
+      tags:
+        - supervisors
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Supervisor'
+    post:
+      summary: Create a new supervisor
+      tags:
+        - supervisors
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supervisor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supervisor'
+  /supervisors/{id}:
+    get:
+      summary: Get a supervisor by ID
+      tags:
+        - supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supervisor'
+    put:
+      summary: Update a supervisor by ID
+      tags:
+        - supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Supervisor'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Supervisor'
+    delete:
+      summary: Delete a supervisor by ID
+      tags:
+        - supervisors
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+  /attendance/{id}:
+    post:
+      summary: Create a new attendance record
+      tags:
+        - attendance
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Attendance'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attendance'
+  /employers:
+    post:
+      summary: Create a new employer
+      tags:
+        - employers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+  /employers/{id}:
+    get:
+      summary: Get an employer by ID
+      tags:
+        - employers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+    put:
+      summary: Update an employer by ID
+      tags:
+        - employers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Employer'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Employer'
+    delete:
+      summary: Delete an employer by ID
+      tags:
+        - employers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: No Content
+components:
+  schemas:
+    Mood:
+      type: object
+      properties:
+        emotion:
+          type: string
+        id:
+          type: integer
+        is_daily:
+          type: boolean
+        recorded_at:
+          type: string
+        student_id:
+          type: integer
+    Student:
+      type: object
+      properties:
+        address_line1:
+          type: string
+        address_line2:
+          type: string
+        city:
+          type: string
+        contact_number:
+          type: string
+        contact_number_guardian:
+          type: string
+        dob:
+          type: string
+        employer_id:
+          type: integer
+        first_name:
+          type: string
+        gender:
+          type: string
+        home_coordinates:
+          type: string
+        id:
+          type: integer
+        last_name:
+          type: string
+        photo:
+          type: array
+          items:
+            type: integer
+        remarks:
+          type: string
+        supervisor_id:
+          type: integer
+    Supervisor:
+      type: object
+      properties:
+        contact_number:
+          type: string
+        email_address:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        student_id:
+          type: integer
+        supervisor_id:
+          type: integer
+    Employer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        address:
+          type: string
+        contact_number:
+          type: string
+    Attendance:
+      type: object
+      properties:
+        id:
+          type: integer
+        student_id:
+          type: integer
+        date:
+          type: string
+        status:
+          type: string

@@ -1,0 +1,1142 @@
+openapi: 3.0.0
+info:
+  title: Employee Management API
+  description: API for managing employees
+  version: 1.0.0
+servers:
+  - url: https://87e89eab-95e5-4c0f-8192-7ee0196e1581-dev.e1-us-east-azure.choreoapis.dev/employee-mgmt-system/server-docker/v1.0
+security:
+  - OAuth2: []
+  - {}
+paths:
+  /post-mood:
+    post:
+      summary: Create a new mood
+      tags:
+        - moods
+      x-wso2-disable-security: true
+      security:
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Mood"
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mood"
+  /get-mood:
+    get:
+      summary: Get a mood by ID
+      tags:
+        - moods
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Mood"
+  /get-students:
+    get:
+      summary: Get all students
+      tags:
+        - students
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Student"
+  /post-student:
+    post:
+      summary: Create a new student
+      tags:
+        - students
+      security:
+        - OAuth2: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+  /get-student:
+    get:
+      summary: Get a student by ID
+      tags:
+        - students
+      x-wso2-disable-security: true
+      security:
+        - {}
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+  /update-student:
+    put:
+      summary: Update a student by ID
+      tags:
+        - students
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+  /delete-student:
+    delete:
+      summary: Delete a student by ID
+      tags:
+        - students
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "204":
+          description: No Content
+  /students/detailed:
+    get:
+      summary: Get detailed student information
+      description: Returns students with their latest attendance and mood data
+      operationId: getDetailedStudents
+      tags:
+        - students
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentDetailedResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /dashboard:
+    get:
+      summary: Get student details for the dashboard
+      description: Returns detailed student information including employer, attendance, and mood data.
+      operationId: getStudentDetails
+      tags:
+        - dashboard
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/StudentCard"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /generate-otp:
+    post:
+      summary: Generate OTP for a student
+      description: Generate a new OTP for a student
+      tags:
+        - authentication
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_id:
+                  type: integer
+                  example: 1
+      responses:
+        "200":
+          description: OTP generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OTPResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /validate-otp:
+    post:
+      summary: Validate OTP
+      description: Validate an OTP and generate a secret code
+      tags:
+        - authentication
+      x-wso2-disable-security: true
+      security:
+        - {}
+      parameters:
+        - name: otp-code
+          in: header
+          required: true
+          schema:
+            type: string
+          description: The OTP code to validate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                otp_code:
+                  type: string
+                  example: "1234"
+      responses:
+        "200":
+          description: OTP validated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OTPValidationResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /verify-device-auth:
+    post:
+      summary: Verify device authorization
+      description: Verify if a device is authorized using student ID and secret code
+      tags:
+        - authentication
+      x-wso2-disable-security: true
+      security:
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_id:
+                  type: integer
+                  example: 1
+                secret_code:
+                  type: string
+                  example: "abcd1234"
+      responses:
+        "200":
+          description: Device authorization verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authorized:
+                    type: boolean
+                    example: true
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /employees:
+    get:
+      summary: Get all employees
+      tags:
+        - employees
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Employee"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /location:
+    post:
+      summary: Update location
+      description: Updates the location data for a student.
+      tags:
+        - location
+      security:
+        - OAuth2: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                longitude:
+                  type: number
+                  format: float
+                latitude:
+                  type: number
+                  format: float
+                address:
+                  type: string
+                studentId:
+                  type: number
+                  format: int64
+      responses:
+        "200":
+          description: Location updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "success"
+                  message:
+                    type: string
+                    example: "Location data received"
+        "400":
+          description: Invalid request body
+        "401":
+          description: Unauthorized
+  /attendance:
+    post:
+      summary: Create or update attendance record
+      description: Handles check-in and check-out attendance records for students.
+      tags:
+        - attendance
+      x-wso2-disable-security: true
+      security:
+        - {}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                check_in:
+                  type: boolean
+                  description: Indicates if this is a check-in or check-out.
+                check_in_lat:
+                  type: number
+                  format: float
+                  description: Latitude for check-in.
+                check_in_long:
+                  type: number
+                  format: float
+                  description: Longitude for check-in.
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student.
+      responses:
+        "200":
+          description: Attendance record created or updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Attendance"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Check-in record not found for today
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /management:
+    get:
+      summary: Get management table
+      description: Returns a joined table of students, employers, and supervisors.
+      tags:
+        - management
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    student_id:
+                      type: integer
+                    student_first_name:
+                      type: string
+                    student_last_name:
+                      type: string
+                    employer_name:
+                      type: string
+                      nullable: true
+                    employer_contact_number:
+                      type: string
+                      nullable: true
+                    supervisor_first_name:
+                      type: string
+                      nullable: true
+                    supervisor_last_name:
+                      type: string
+                      nullable: true
+                    supervisor_contact_number:
+                      type: string
+                      nullable: true
+        "500":
+          description: Internal Server Error
+  /trainee-profile:
+    get:
+      summary: Get trainee profile data
+      description: Returns student information, recent moods, and recent attendance records
+      tags:
+        - profile
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the student
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TraineeProfileResponse"
+        "400":
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /create-employee:
+    post:
+      summary: Create a new employee
+      tags:
+        - employees
+      security:
+        - OAuth2: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "201":
+          description: Student created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Student"
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+  /update-employee:
+    put:
+      summary: Update an employee by student-id header
+      tags:
+        - employees
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the employee (student-id)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        "200":
+          description: Student updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Student"
+        "400":
+          description: Bad Request
+        "404":
+          description: Student not found
+        "500":
+          description: Internal Server Error
+  /delete-employee:
+    delete:
+      summary: Delete an employee by student-id header
+      tags:
+        - employees
+      security:
+        - OAuth2: []
+      parameters:
+        - name: student-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the employee (student-id)
+      responses:
+        "200":
+          description: Student deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+                    example: "Student deleted successfully"
+        "400":
+          description: Bad Request
+        "404":
+          description: Student not found
+        "500":
+          description: Internal Server Error
+  /get-employer-ids:
+    get:
+      summary: Get all employer IDs and names
+      tags:
+        - employers
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: List of employer IDs and names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      format: int64
+                    name:
+                      type: string
+  /get-supervisor-ids:
+    get:
+      summary: Get all supervisor IDs and names
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: List of supervisor IDs and names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    supervisor_id:
+                      type: integer
+                      format: int64
+                    first_name:
+                      type: string
+                    last_name:
+                      type: string
+  /get-supervisors:
+    get:
+      summary: Get all supervisors
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Supervisor"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /get-supervisor:
+    get:
+      summary: Get a supervisor by ID
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      parameters:
+        - name: supervisor-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the supervisor
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supervisor"
+        "400":
+          description: Invalid supervisor ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Supervisor not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /create-supervisor:
+    post:
+      summary: Create a new supervisor
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Supervisor"
+      responses:
+        "201":
+          description: Supervisor created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supervisor"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /update-supervisor:
+    put:
+      summary: Update a supervisor by ID
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      parameters:
+        - name: supervisor-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the supervisor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Supervisor"
+      responses:
+        "200":
+          description: Supervisor updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Supervisor"
+        "400":
+          description: Invalid supervisor ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
+          description: Supervisor not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /delete-supervisor:
+    delete:
+      summary: Delete a supervisor by ID
+      tags:
+        - supervisors
+      security:
+        - OAuth2: []
+      parameters:
+        - name: supervisor-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the supervisor
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid supervisor ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://login.microsoftonline.com/4c4d3e48-7132-4338-b2f8-2247be35ee76/oauth2/v2.0/authorize
+          tokenUrl: https://login.microsoftonline.com/4c4d3e48-7132-4338-b2f8-2247be35ee76/oauth2/v2.0/token
+          scopes: {}
+
+  schemas:
+    Mood:
+      type: object
+      properties:
+        emotion:
+          type: string
+        id:
+          type: integer
+        is_daily:
+          type: boolean
+        recorded_at:
+          type: string
+        student_id:
+          type: integer
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        dob:
+          type: string
+          format: date-time
+        gender:
+          type: string
+        address_line1:
+          type: string
+        address_line2:
+          type: string
+        city:
+          type: string
+        contact_number:
+          type: string
+        contact_number_guardian:
+          type: string
+        supervisor_id:
+          type: integer
+          nullable: true
+        remarks:
+          type: string
+        home_long:
+          type: number
+          format: float
+        home_lat:
+          type: number
+          format: float
+        employer_id:
+          type: integer
+          nullable: true
+        check_in_time:
+          type: string
+        check_out_time:
+          type: string
+    Attendance:
+      type: object
+      properties:
+        id:
+          type: integer
+        student_id:
+          type: integer
+        date:
+          type: string
+        status:
+          type: string
+    StudentDetailedResponse:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          format: int64
+          example: 12345
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        employer_name:
+          type: string
+          example: "Acme Corp"
+        check_in_date_time:
+          type: string
+          format: date-time
+          example: "2023-05-01T08:30:00Z"
+        check_out_date_time:
+          type: string
+          format: date-time
+          example: "2023-05-01T17:30:00Z"
+        emotion:
+          type: string
+          example: "happy"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Failed to retrieve student data"
+    StudentCard:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          format: int64
+          example: 12345
+        first_name:
+          type: string
+          example: "John"
+        last_name:
+          type: string
+          example: "Doe"
+        employer_name:
+          type: string
+          nullable: true
+          example: "Acme Corp"
+        check_in_date_time:
+          type: string
+          format: date-time
+          example: "2023-05-01T08:30:00Z"
+        check_out_date_time:
+          type: string
+          format: date-time
+          example: "2023-05-01T17:30:00Z"
+        emotion:
+          type: string
+          example: "happy"
+    OTPResponse:
+      type: object
+      properties:
+        student_id:
+          type: integer
+          example: 1
+        otp_code:
+          type: string
+          example: "1234"
+        expires_at:
+          type: string
+          format: date-time
+          example: "2025-04-30T15:30:00Z"
+    OTPValidationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Authentication successful"
+        token:
+          type: string
+          example: "abcd1234"
+    Employee:
+      type: object
+      properties:
+        student_id:
+          type: integer
+        student_name:
+          type: string
+        student_contact:
+          type: string
+        employer_id:
+          type: integer
+          nullable: true
+        employer_name:
+          type: string
+          nullable: true
+        employer_contact:
+          type: string
+          nullable: true
+        employer_address:
+          type: string
+          nullable: true
+        supervisor_id:
+          type: integer
+          nullable: true
+        supervisor_name:
+          type: string
+          nullable: true
+        latest_otp_code:
+          type: string
+          nullable: true
+        expires_at:
+          type: string
+          format: date-time
+          nullable: true
+    TraineeProfileResponse:
+      type: object
+      properties:
+        student_info:
+          type: object
+          properties:
+            first_name:
+              type: string
+              example: "John"
+            last_name:
+              type: string
+              example: "Doe"
+            gender:
+              type: string
+              example: "Male"
+            contact_number:
+              type: string
+              example: "123-456-7890"
+            contact_number_guardian:
+              type: string
+              example: "098-765-4321"
+            remarks:
+              type: string
+              example: "Regular attendance"
+            employer_name:
+              type: string
+              example: "Acme Corp"
+        recent_moods:
+          type: array
+          items:
+            type: object
+            properties:
+              emotion:
+                type: string
+                example: "happy"
+              recorded_at:
+                type: string
+                format: date-time
+                example: "2025-06-01T09:30:00Z"
+              is_daily:
+                type: boolean
+                example: true
+        recent_attendance:
+          type: array
+          items:
+            type: object
+            properties:
+              scheduled_check_in:
+                type: string
+                example: "10:30:00"
+              scheduled_check_out:
+                type: string
+                example: "18:30:00"
+              actual_check_in:
+                type: string
+                format: date-time
+                example: "2025-06-01T10:35:12Z"
+              actual_check_out:
+                type: string
+                format: date-time
+                example: "2025-06-01T18:25:45Z"
+    Supervisor:
+      type: object
+      properties:
+        supervisor_id:
+          type: integer
+          format: int64
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email_address:
+          type: string
+        contact_number:
+          type: string
