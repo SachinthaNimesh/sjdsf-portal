@@ -1,0 +1,58 @@
+{
+  "employees": [
+    {
+      "student_id": 1,
+      "first_name": "John",
+      "last_name": "Doe",
+      "employer_name": "Tech Corp",
+      "check_in_date_time": "2024-03-20T09:00:00",
+      "check_out_date_time": null,
+      "emotion": "happy"
+    },
+    {
+      "student_id": 2,
+      "first_name": "Jane",
+      "last_name": "Smith",
+      "employer_name": "Digital Solutions",
+      "check_in_date_time": "2024-03-20T08:45:00",
+      "check_out_date_time": "2024-03-20T17:30:00",
+      "emotion": "neutral"
+    },
+    {
+      "student_id": 3,
+      "first_name": "Mike",
+      "last_name": "Johnson",
+      "employer_name": "Innovation Labs",
+      "check_in_date_time": "2024-03-20T09:15:00",
+      "check_out_date_time": null,
+      "emotion": "sad"
+    },
+    {
+      "student_id": 4,
+      "first_name": "Sarah",
+      "last_name": "Williams",
+      "employer_name": "Tech Corp",
+      "check_in_date_time": "2024-03-20T08:30:00",
+      "check_out_date_time": "2024-03-20T17:00:00",
+      "emotion": "happy"
+    },
+    {
+      "student_id": 5,
+      "first_name": "David",
+      "last_name": "Brown",
+      "employer_name": "Digital Solutions",
+      "check_in_date_time": "2024-03-20T09:00:00",
+      "check_out_date_time": null,
+      "emotion": "neutral"
+    },
+    {
+      "student_id": 6,
+      "first_name": "Emma",
+      "last_name": "Davis",
+      "employer_name": "Innovation Labs",
+      "check_in_date_time": "2024-03-20T08:45:00",
+      "check_out_date_time": "2024-03-20T17:15:00",
+      "emotion": "happy"
+    }
+  ]
+}

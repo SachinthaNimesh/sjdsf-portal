@@ -1,0 +1,6 @@
+.env
+node_modules
+config/configs.ts
+public/config.js
+
+dist/config.js
