@@ -8,7 +8,8 @@ import {
   StyleSheet,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { BASE_URL } from "../../config/config";
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -23,17 +24,14 @@ const OTP: React.FC<Props> = ({ navigation }) => {
         throw new Error("Invalid OTP. Please enter a valid OTP.");
       }
 
-      const response = await fetch(
-        "https://87e89eab-95e5-4c0f-8192-7ee0196e1581-dev.e1-us-east-azure.choreoapis.dev/employee-mgmt-system/student-mgmt-server/v1.0/validate-otp",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "api-key": String(process.env.EXPO_PUBLIC_API_KEY ?? ""),
-            "otp-code": otp, 
-          },
-        }
-      );
+      const response = await fetch(BASE_URL + "/validate-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "api-key": String(process.env.EXPO_PUBLIC_API_KEY ?? ""),
+          "otp-code": otp,
+        },
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -52,7 +50,7 @@ const OTP: React.FC<Props> = ({ navigation }) => {
       const data = await response.json();
 
       // Extract student_id from the response and store in AsyncStorage
-      const { success, student_id, message } = data; 
+      const { success, student_id, message } = data;
 
       if (!success) {
         throw new Error(message || "Invalid response from server");
