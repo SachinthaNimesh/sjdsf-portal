@@ -1,4 +1,4 @@
-export const API_URL = "/choreo-apis/employee-mgmt-system/server-docker/v1";
+export const API_URL = "/choreo-apis/employee-mgmt-system/backend/v1";
 // export const API_URL =
 // "https://87e89eab-95e5-4c0f-8192-7ee0196e1581-dev.e1-us-east-azure.choreoapis.dev/employee-mgmt-system/server-docker/v1.0";
 
