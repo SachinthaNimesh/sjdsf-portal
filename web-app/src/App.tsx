@@ -13,6 +13,7 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ManagerFeedback from "./pages/ManagerFeedback";
 import SupervisorManagement from "./pages/SupervisorManagement";
+import EmployerManagement from "./pages/EmployerManagement";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,16 @@ const App = () => (
               <ProtectedRoute>
                 <MainLayout>
                   <SupervisorManagement />
+                </MainLayout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/employer-management"
+            element={
+              <ProtectedRoute>
+                <MainLayout>
+                  <EmployerManagement />
                 </MainLayout>
               </ProtectedRoute>
             }

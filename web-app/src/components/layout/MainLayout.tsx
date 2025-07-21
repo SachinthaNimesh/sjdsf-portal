@@ -40,10 +40,10 @@ function Sidebar({ compact = false }) {
       match: "/student-management",
     },
     {
-      to: "#",
+      to: "/employer-management",
       icon: <Factory className="w-5 h-5" />,
       label: "Employer Management",
-      match: "#",
+      match: "/employer-management",
     },
     {
       to: "/supervisor-management",
@@ -115,20 +115,31 @@ const MainLayout = ({ children }: MainLayoutProps) => {
 
   useEffect(() => {
     let userInfo = null;
-    const sessionUser = sessionStorage.getItem("UserInfo");
-    if (sessionUser) {
+    // Try localStorage first (for consistency with logout)
+    const localUser = localStorage.getItem("userInfo");
+    if (localUser) {
       try {
-        userInfo = JSON.parse(sessionUser);
+        userInfo = JSON.parse(localUser);
       } catch {
         userInfo = null;
       }
     } else {
-      const userInfoCookie = Cookies.get("userinfo");
-      if (userInfoCookie) {
+      // Try sessionStorage fallback
+      const sessionUser = sessionStorage.getItem("userInfo");
+      if (sessionUser) {
         try {
-          userInfo = JSON.parse(atob(userInfoCookie));
+          userInfo = JSON.parse(sessionUser);
         } catch {
           userInfo = null;
+        }
+      } else {
+        const userInfoCookie = Cookies.get("userinfo");
+        if (userInfoCookie) {
+          try {
+            userInfo = JSON.parse(atob(userInfoCookie));
+          } catch {
+            userInfo = null;
+          }
         }
       }
     }
@@ -136,7 +147,16 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   }, []);
   console.log("User info:", user);
   const handleLogout = () => {
-    window.location.href = "/";
+    // Clear stored user info
+    localStorage.removeItem("userInfo");
+    sessionStorage.removeItem("userInfo");
+    setUser(null);
+
+    // Redirect to Choreo logout
+    const sessionHint = Cookies.get("session_hint");
+    window.location.href = `/auth/logout${
+      sessionHint ? `?session_hint=${sessionHint}` : ""
+    }`;
   };
 
   return (
@@ -188,11 +208,11 @@ const MainLayout = ({ children }: MainLayoutProps) => {
                       {user?.first_name && user.first_name.trim().length > 0
                         ? user.first_name +
                           (user?.last_name ? ` ${user.last_name}` : "")
-                        : user?.email || "User"}
+                        : user?.email
+                        ? user.email
+                        : ""}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      {user?.email || "user@example.com"}
-                    </p>
+                    <p className="text-xs text-gray-500">{user?.email || ""}</p>
                   </div>
                 </div>
                 <button
