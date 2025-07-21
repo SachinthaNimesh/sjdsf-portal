@@ -1293,6 +1293,3 @@ components:
         addr_lat:
           type: number
           format: float
-        addr_lat:
-          type: number
-          format: float
