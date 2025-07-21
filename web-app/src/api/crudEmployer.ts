@@ -31,12 +31,15 @@ const API_KEY =
 export function useEmployerService() {
   const getEmployers = async (): Promise<Employer[]> => {
     try {
-      const response = await axios.get<Employer[]>(`${API_URL}/employers`, {
-        headers: {
-          "Content-Type": "application/json",
-          "api-key": API_KEY,
-        },
-      });
+      const response = await axios.get<Employer[]>(
+        `${API_URL}/get-employer-ids`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "api-key": API_KEY,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       console.error("Error fetching employers:", error);
@@ -60,9 +63,7 @@ export function useEmployerService() {
     }
   };
 
-  const createEmployer = async (
-    employer: EmployerInput
-  ): Promise<Employer> => {
+  const createEmployer = async (employer: EmployerInput): Promise<Employer> => {
     try {
       const response = await axios.post<Employer>(
         `${API_URL}/create-employer`,

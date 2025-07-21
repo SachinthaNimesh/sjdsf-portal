@@ -249,13 +249,13 @@ const EmployerManagement = () => {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100/50">
-                    <TableHead className="w-16 font-semibold text-gray-700">
+                    <TableHead className="pl-16 w-1/5 font-semibold text-gray-700 text-left">
                       ID
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700">
+                    <TableHead className="pl-16 w-3/5 font-semibold text-gray-700 text-left">
                       NAME
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700">
+                    <TableHead className="pr-6 w-1/5 font-semibold text-gray-700 text-center">
                       ACTION
                     </TableHead>
                   </TableRow>
@@ -279,14 +279,14 @@ const EmployerManagement = () => {
                         key={item.id}
                         className="hover:bg-blue-50/50 transition-colors duration-200"
                       >
-                        <TableCell className="font-medium text-gray-900">
+                        <TableCell className="pl-16 font-medium text-gray-900 text-left w-1/5">
                           {item.id}
                         </TableCell>
-                        <TableCell className="text-gray-700">
+                        <TableCell className="pl-16 text-gray-700 text-left w-3/5">
                           {item.name}
                         </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
+                        <TableCell className="text-center w-1/5">
+                          <div className="flex justify-center space-x-2">
                             <button
                               onClick={() => handleEditEmployer(item)}
                               className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200"
