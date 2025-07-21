@@ -1,8 +1,12 @@
 {
   "cli": {
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
     "preview": {
       "channel": "preview",
       "android": {
@@ -26,9 +30,8 @@
     "production": {
       "channel": "production",
       "android": {
-      "buildType": "app-bundle"
+        "buildType": "app-bundle"
       }
-    }
     },
     "apkbuild": {
       "channel": "apkbuild",
@@ -50,3 +53,4 @@
     }
   }
 }
+

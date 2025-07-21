@@ -18,7 +18,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.sachintha_wso2.studentmanagementapp",
-      "versionCode": 5
+      "versionCode": 4
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +32,14 @@
     "updates": {
       "url": "https://u.expo.dev/a704672c-6fca-4644-b5d2-88c9dcf0662e"
     },
-    "owner": "sjdsf"
+    "owner": "sjdsf",
+    "plugins": [
+      [
+        "expo-dev-client",
+        {
+          "launchMode": "most-recent"
+        }
+      ]
+    ]
   }
 }
