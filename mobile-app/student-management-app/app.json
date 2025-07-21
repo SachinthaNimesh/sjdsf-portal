@@ -17,7 +17,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.sachintha_wso2.studentmanagementapp"
+      "package": "com.sachintha_wso2.studentmanagementapp",
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
