@@ -25,12 +25,11 @@ func RegisterStudentRoutes(router *mux.Router) {
 	router.HandleFunc("/delete-supervisor", controllers.DeleteSupervisor).Methods("DELETE")
 
 	// employer routes
-	// TODO
-	// router.HandleFunc("/get-employers", controllers.GetEmployers).Methods("GET")
-	// router.HandleFunc("/get-employer", controllers.GetEmployer).Methods("GET")
-	// router.HandleFunc("/create-employer", controllers.CreateEmployer).Methods("POST")
-	// router.HandleFunc("/update-employer", controllers.UpdateEmployer).Methods("PUT")
-	// router.HandleFunc("/delete-employer", controllers.DeleteEmployer).Methods("DELETE")
+	router.HandleFunc("/create-employer", controllers.CreateEmployer).Methods("POST")
+	router.HandleFunc("/get-employer", controllers.GetEmployer).Methods("GET")
+	router.HandleFunc("/update-employer", controllers.UpdateEmployer).Methods("PUT")
+	router.HandleFunc("/delete-employer", controllers.DeleteEmployer).Methods("DELETE")
+	router.HandleFunc("/get-employer-ids", controllers.GetAllEmployerIDsAndNames).Methods("GET")
 
 	// Add attendance routes
 	router.HandleFunc("/attendance", controllers.PostAttendance).Methods("POST")
@@ -47,5 +46,5 @@ func RegisterStudentRoutes(router *mux.Router) {
 	router.HandleFunc("/trainee-profile", controllers.GetTraineeProfile).Methods("GET")
 
 	router.HandleFunc("/get-supervisor-ids", controllers.GetAllSupervisorIDsAndNames).Methods("GET")
-	router.HandleFunc("/get-employer-ids", controllers.GetAllEmployerIDsAndNames).Methods("GET")
+	// router.HandleFunc("/get-employer-ids", controllers.GetAllEmployerIDsAndNames).Methods("GET")
 }

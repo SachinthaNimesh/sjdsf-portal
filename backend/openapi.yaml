@@ -656,6 +656,113 @@ paths:
           description: Student not found
         "500":
           description: Internal Server Error
+  /create-employer:
+    post:
+      summary: Create a new employer
+      tags:
+        - employers
+      security:
+        - OAuth2: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployerInput"
+      responses:
+        "201":
+          description: Employer created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employer"
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+  /get-employer:
+    get:
+      summary: Get an employer by ID
+      tags:
+        - employers
+      security:
+        - OAuth2: []
+      parameters:
+        - name: employer-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the employer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employer"
+        "400":
+          description: Invalid employer ID
+        "404":
+          description: Employer not found
+        "500":
+          description: Internal Server Error
+  /update-employer:
+    put:
+      summary: Update an employer by ID
+      tags:
+        - employers
+      security:
+        - OAuth2: []
+      parameters:
+        - name: employer-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the employer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmployerInput"
+      responses:
+        "200":
+          description: Employer updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Employer"
+        "400":
+          description: Invalid employer ID
+        "404":
+          description: Employer not found
+        "500":
+          description: Internal Server Error
+  /delete-employer:
+    delete:
+      summary: Delete an employer by ID
+      tags:
+        - employers
+      security:
+        - OAuth2: []
+      parameters:
+        - name: employer-id
+          in: header
+          required: true
+          schema:
+            type: integer
+          description: The ID of the employer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid employer ID
+        "404":
+          description: Employer not found
+        "500":
+          description: Internal Server Error
   /get-employer-ids:
     get:
       summary: Get all employer IDs and names
@@ -1140,3 +1247,52 @@ components:
           type: string
         contact_number:
           type: string
+    EmployerInput:
+      type: object
+      properties:
+        name:
+          type: string
+        contact_number:
+          type: string
+        address_line1:
+          type: string
+        address_line2:
+          type: string
+        address_line3:
+          type: string
+        addr_long:
+          type: number
+          format: float
+        addr_lat:
+          type: number
+          format: float
+      required:
+        - name
+        - contact_number
+        - address_line1
+        - address_line3
+    Employer:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        contact_number:
+          type: string
+        address_line1:
+          type: string
+        address_line2:
+          type: string
+        address_line3:
+          type: string
+        addr_long:
+          type: number
+          format: float
+        addr_lat:
+          type: number
+          format: float
+        addr_lat:
+          type: number
+          format: float

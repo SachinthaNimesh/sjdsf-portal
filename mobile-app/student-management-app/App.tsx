@@ -24,13 +24,15 @@ type ScreenProps = {
 const LAST_ROUTE_KEY = "LAST_ROUTE_NAME";
 
 export default function App() {
-  const [initialRoute, setInitialRoute] = useState<string | undefined>(undefined);
+  const [initialRoute, setInitialRoute] = useState<string | undefined>(
+    undefined
+  );
   const routeNameRef = useRef<string>("");
 
   useEffect(() => {
     // Load last route name from storage
     AsyncStorage.getItem(LAST_ROUTE_KEY).then((route) => {
-      setInitialRoute(route || "Welcome");
+      setInitialRoute(route || "Welcome!");
     });
   }, []);
 

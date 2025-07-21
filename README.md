@@ -8,6 +8,8 @@ npx expo-doctor for a health check
 
 BASE_URL: sjdsf-portal/mobile-app/student-management-app/config/config.ts
 
+When pushing an update to the playstore update version increase the "versionCode": 2 in app.json
+
 # Backend
 
 go run main.go

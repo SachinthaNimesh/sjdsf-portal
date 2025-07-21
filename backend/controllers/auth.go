@@ -123,6 +123,29 @@ func (s *AuthService) GenerateOTP(studentID int) (*models.OTPResponse, error) {
 		return nil, errors.New("student not found")
 	}
 
+	// Delete expired OTPs
+	_, _ = s.db.Exec("DELETE FROM otps WHERE expires_at <= $1", time.Now())
+
+	// Check for existing active OTP
+	var existingOTP string
+	var expiresAt time.Time
+	err = s.db.QueryRow(
+		"SELECT otp_code, expires_at FROM otps WHERE student_id = $1 AND is_used = false AND expires_at > $2",
+		studentID, time.Now(),
+	).Scan(&existingOTP, &expiresAt)
+	if err == nil {
+		// Active OTP exists, return it
+		return &models.OTPResponse{
+			StudentID: studentID,
+			OTPCode:   existingOTP,
+			ExpiresAt: expiresAt,
+		}, nil
+	} else if err != sql.ErrNoRows {
+		// Unexpected DB error
+		log.Printf("Database error while checking active OTP: %v", err)
+		return nil, fmt.Errorf("database error: %w", err)
+	}
+
 	// Invalidate any existing unused OTPs for this student (mark expired ones as used)
 	_, err = s.db.Exec("UPDATE otps SET is_used = true WHERE student_id = $1 AND is_used = false", studentID)
 	if err != nil {
@@ -138,7 +161,7 @@ func (s *AuthService) GenerateOTP(studentID int) (*models.OTPResponse, error) {
 	}
 
 	// Set expiration time (30 minutes from now)
-	expiresAt := time.Now().Add(30 * time.Minute)
+	expiresAt = time.Now().Add(30 * time.Minute)
 
 	// Insert new OTP
 	_, err = s.db.Exec("INSERT INTO otps (student_id, otp_code, expires_at, is_used) VALUES ($1, $2, $3, $4)", studentID, otp, expiresAt, false)
@@ -169,6 +192,9 @@ func (s *AuthService) ValidateOTP(otpCode string) (*models.OTPValidationResponse
 		log.Printf("Database error while fetching OTP for code %s: %v", otpCode, err)
 		return nil, fmt.Errorf("database error: %w", err)
 	}
+
+	// Optionally, delete all expired OTPs (for all students)
+	_, _ = s.db.Exec("DELETE FROM otps WHERE expires_at <= $1", time.Now())
 
 	// Check if OTP is already used
 	if otp.IsUsed {

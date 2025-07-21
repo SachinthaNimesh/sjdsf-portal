@@ -8,38 +8,15 @@ import (
 
 	"server/database"
 	"server/models"
-
-	"github.com/gorilla/mux"
 )
 
-// CreateEmployer godoc
-// @Summary Create a new employer
-// @Description Create a new employer with the input payload
-// @Tags employers
-// @Accept json
-// @Produce json
-//
-//	@Param employer body struct {
-//		Name          string  `json:"name"`
-//		ContactNumber string  `json:"contact_number"`
-//		AddressLine1  string  `json:"address_line_1"`
-//		AddressLine2  string  `json:"address_line_2"`
-//		AddressLine3  string  `json:"address_line_3"`
-//		Longitude     float64 `json:"addr_long"`
-//		Latitude      float64 `json:"addr_lat"`
-//	} true "Employer input"
-//
-// @Success 200 {object} models.Employer
-// @Failure 400 {string} string "Bad Request"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /employers [post]
 func CreateEmployer(w http.ResponseWriter, r *http.Request) {
 	var employerInput struct {
 		Name          string  `json:"name"`
 		ContactNumber string  `json:"contact_number"`
-		AddressLine1  string  `json:"address_line_1"`
-		AddressLine2  string  `json:"address_line_2"`
-		AddressLine3  string  `json:"address_line_3"`
+		AddressLine1  string  `json:"address_line1"`
+		AddressLine2  string  `json:"address_line2"`
+		AddressLine3  string  `json:"address_line3"`
 		Longitude     float64 `json:"addr_long"`
 		Latitude      float64 `json:"addr_lat"`
 	}
@@ -61,22 +38,11 @@ func CreateEmployer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(employer)
 }
 
-// GetEmployer godoc
-// @Summary Get an employer by ID
-// @Description Get details of an employer by ID
-// @Tags employers
-// @Produce json
-// @Param id path int true "Employer ID"
-// @Success 200 {object} models.Employer
-// @Failure 400 {string} string "Invalid ID"
-// @Failure 404 {string} string "Employer not found"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /employers/{id} [get]
 func GetEmployer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
+	idStr := r.Header.Get("employer-id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "Invalid employer-id header", http.StatusBadRequest)
 		return
 	}
 	var employer models.Employer
@@ -95,42 +61,19 @@ func GetEmployer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(employer)
 }
 
-// UpdateEmployer godoc
-// @Summary Update an employer by ID
-// @Description Update details of an employer by ID
-// @Tags employers
-// @Accept json
-// @Produce json
-// @Param id path int true "Employer ID"
-//
-//	@Param employer body struct {
-//		Name          string  `json:"name"`
-//		ContactNumber string  `json:"contact_number"`
-//		AddressLine1  string  `json:"address_line1"`
-//		AddressLine2  string  `json:"address_line2"`
-//		AddressLine3  string  `json:"address_line3"`
-//		Longitude     float64 `json:"addr_long"`
-//		Latitude      float64 `json:"addr_lat"`
-//	} true "Employer input"
-//
-// @Success 200 {object} models.Employer
-// @Failure 400 {string} string "Invalid ID"
-// @Failure 404 {string} string "Employer not found"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /employers/{id} [put]
 func UpdateEmployer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
+	idStr := r.Header.Get("employer-id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "Invalid employer-id header", http.StatusBadRequest)
 		return
 	}
 	var employerInput struct {
 		Name          string  `json:"name"`
 		ContactNumber string  `json:"contact_number"`
-		AddressLine1  string  `json:"address_line1"`
-		AddressLine2  string  `json:"address_line2"`
-		AddressLine3  string  `json:"address_line3"`
+		AddressLine1  string  `json:"address_line1"` // changed from address_line1 (already correct)
+		AddressLine2  string  `json:"address_line2"` // changed from address_line2 (already correct)
+		AddressLine3  string  `json:"address_line3"` // changed from address_line3 (already correct)
 		Longitude     float64 `json:"addr_long"`
 		Latitude      float64 `json:"addr_lat"`
 	}
@@ -165,20 +108,11 @@ func UpdateEmployer(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(employer)
 }
 
-// DeleteEmployer godoc
-// @Summary Delete an employer by ID
-// @Description Delete an employer by ID
-// @Tags employers
-// @Param id path int true "Employer ID"
-// @Success 204 {string} string "No Content"
-// @Failure 400 {string} string "Invalid ID"
-// @Failure 500 {string} string "Internal Server Error"
-// @Router /employers/{id} [delete]
 func DeleteEmployer(w http.ResponseWriter, r *http.Request) {
-	params := mux.Vars(r)
-	id, err := strconv.Atoi(params["id"])
+	idStr := r.Header.Get("employer-id")
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		http.Error(w, "Invalid employer-id header", http.StatusBadRequest)
 		return
 	}
 	res, err := database.DB.Exec(`DELETE FROM employer WHERE id = $1`, id)
@@ -194,13 +128,6 @@ func DeleteEmployer(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
-// GetAllEmployerIDsAndNames godoc
-// @Summary Get all employer IDs and names
-// @Description Returns a list of all employer IDs and their names
-// @Tags employers
-// @Produce json
-// @Success 200 {array} object
-// @Router /employers/ids-names [get]
 func GetAllEmployerIDsAndNames(w http.ResponseWriter, r *http.Request) {
 	type EmployerIDName struct {
 		ID   uint64 `json:"id"`
