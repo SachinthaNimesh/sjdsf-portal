@@ -25,6 +25,7 @@ func RegisterStudentRoutes(router *mux.Router) {
 	router.HandleFunc("/delete-supervisor", controllers.DeleteSupervisor).Methods("DELETE")
 
 	// employer routes
+	router.HandleFunc("/get-employers", controllers.GetAllEmployerIDsAndNames).Methods("GET")
 	router.HandleFunc("/create-employer", controllers.CreateEmployer).Methods("POST")
 	router.HandleFunc("/get-employer", controllers.GetEmployer).Methods("GET")
 	router.HandleFunc("/update-employer", controllers.UpdateEmployer).Methods("PUT")

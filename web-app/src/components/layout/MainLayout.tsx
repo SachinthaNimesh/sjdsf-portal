@@ -40,10 +40,10 @@ function Sidebar({ compact = false }) {
       match: "/student-management",
     },
     {
-      to: "#",
+      to: "/employer-management",
       icon: <Factory className="w-5 h-5" />,
       label: "Employer Management",
-      match: "#",
+      match: "/employer-management",
     },
     {
       to: "/supervisor-management",
