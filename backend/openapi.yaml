@@ -5,18 +5,20 @@ info:
   version: 1.0.0
 servers:
   - url: https://87e89eab-95e5-4c0f-8192-7ee0196e1581-prod.e1-us-east-azure.choreoapis.dev/employee-mgmt-system/backend/v1.0
+
+# Global security - this will apply to all operations unless overridden
 security:
   - OAuth2: []
-  - {}
+
 paths:
   /post-mood:
     post:
       summary: Create a new mood
       tags:
         - moods
+      # Override global security for this endpoint
+      security: []
       x-wso2-disable-security: true
-      security:
-        - {}
       requestBody:
         required: true
         content:
@@ -37,13 +39,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Mood"
+
   /get-mood:
     get:
       summary: Get a mood by ID
       tags:
         - moods
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -58,13 +60,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Mood"
+
   /get-students:
     get:
       summary: Get all students
       tags:
         - students
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -81,13 +83,13 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Student"
+
   /post-student:
     post:
       summary: Create a new student
       tags:
         - students
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       requestBody:
         required: true
         content:
@@ -108,14 +110,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Student"
+
   /get-student:
     get:
       summary: Get a student by ID
       tags:
         - students
+      # Override global security for this endpoint
+      security: []
       x-wso2-disable-security: true
-      security:
-        - {}
       parameters:
         - name: student-id
           in: header
@@ -130,13 +133,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Student"
+
   /update-student:
     put:
       summary: Update a student by ID
       tags:
         - students
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -157,13 +160,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Student"
+
   /delete-student:
     delete:
       summary: Delete a student by ID
       tags:
         - students
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -174,6 +177,7 @@ paths:
       responses:
         "204":
           description: No Content
+
   /students/detailed:
     get:
       summary: Get detailed student information
@@ -181,8 +185,7 @@ paths:
       operationId: getDetailedStudents
       tags:
         - students
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: Successful operation
@@ -198,6 +201,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /dashboard:
     get:
       summary: Get student details for the dashboard
@@ -205,8 +209,7 @@ paths:
       operationId: getStudentDetails
       tags:
         - dashboard
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: Successful operation
@@ -222,14 +225,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /generate-otp:
     post:
       summary: Generate OTP for a student
       description: Generate a new OTP for a student
       tags:
         - authentication
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -266,15 +269,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /validate-otp:
     post:
       summary: Validate OTP
       description: Validate an OTP and generate a secret code
       tags:
         - authentication
+      # Override global security for this endpoint (public endpoint)
+      security: []
       x-wso2-disable-security: true
-      security:
-        - {}
       parameters:
         - name: otp-code
           in: header
@@ -311,15 +315,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /verify-device-auth:
     post:
       summary: Verify device authorization
       description: Verify if a device is authorized using student ID and secret code
       tags:
         - authentication
+      # Override global security for this endpoint (public endpoint)
+      security: []
       x-wso2-disable-security: true
-      security:
-        - {}
       requestBody:
         required: true
         content:
@@ -356,13 +361,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /employees:
     get:
       summary: Get all employees
       tags:
         - employees
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: OK
@@ -378,14 +383,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /location:
     post:
       summary: Update location
       description: Updates the location data for a student.
       tags:
         - location
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       requestBody:
         required: true
         content:
@@ -422,15 +427,16 @@ paths:
           description: Invalid request body
         "401":
           description: Unauthorized
+
   /attendance:
     post:
       summary: Create or update attendance record
       description: Handles check-in and check-out attendance records for students.
       tags:
         - attendance
+      # Override global security for this endpoint (public endpoint)
+      security: []
       x-wso2-disable-security: true
-      security:
-        - {}
       requestBody:
         required: true
         content:
@@ -481,14 +487,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /management:
     get:
       summary: Get management table
       description: Returns a joined table of students, employers, and supervisors.
       tags:
         - management
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: Successful operation
@@ -522,14 +528,14 @@ paths:
                       nullable: true
         "500":
           description: Internal Server Error
+
   /trainee-profile:
     get:
       summary: Get trainee profile data
       description: Returns student information, recent moods, and recent attendance records
       tags:
         - profile
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -562,13 +568,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
   /create-employee:
     post:
       summary: Create a new employee
       tags:
         - employees
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       requestBody:
         required: true
         content:
@@ -589,13 +595,13 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
+
   /update-employee:
     put:
       summary: Update an employee by student-id header
       tags:
         - employees
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -625,13 +631,13 @@ paths:
           description: Student not found
         "500":
           description: Internal Server Error
+
   /delete-employee:
     delete:
       summary: Delete an employee by student-id header
       tags:
         - employees
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: student-id
           in: header
@@ -656,13 +662,13 @@ paths:
           description: Student not found
         "500":
           description: Internal Server Error
+
   /create-employer:
     post:
       summary: Create a new employer
       tags:
         - employers
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       requestBody:
         required: true
         content:
@@ -680,13 +686,13 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
+
   /get-employer:
     get:
       summary: Get an employer by ID
       tags:
         - employers
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: employer-id
           in: header
@@ -707,13 +713,13 @@ paths:
           description: Employer not found
         "500":
           description: Internal Server Error
+
   /update-employer:
     put:
       summary: Update an employer by ID
       tags:
         - employers
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: employer-id
           in: header
@@ -740,13 +746,13 @@ paths:
           description: Employer not found
         "500":
           description: Internal Server Error
+
   /delete-employer:
     delete:
       summary: Delete an employer by ID
       tags:
         - employers
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: employer-id
           in: header
@@ -763,13 +769,13 @@ paths:
           description: Employer not found
         "500":
           description: Internal Server Error
+
   /get-employer-ids:
     get:
       summary: Get all employer IDs and names
       tags:
         - employers
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: List of employer IDs and names
@@ -785,13 +791,13 @@ paths:
                       format: int64
                     name:
                       type: string
+
   /get-supervisor-ids:
     get:
       summary: Get all supervisor IDs and names
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: List of supervisor IDs and names
@@ -809,13 +815,13 @@ paths:
                       type: string
                     last_name:
                       type: string
+
   /get-supervisors:
     get:
       summary: Get all supervisors
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       responses:
         "200":
           description: OK
@@ -837,8 +843,7 @@ paths:
       summary: Get a supervisor by ID
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: supervisor-id
           in: header
@@ -871,8 +876,7 @@ paths:
       summary: Create a new supervisor
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       requestBody:
         required: true
         content:
@@ -904,8 +908,7 @@ paths:
       summary: Update a supervisor by ID
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: supervisor-id
           in: header
@@ -950,8 +953,7 @@ paths:
       summary: Delete a supervisor by ID
       tags:
         - supervisors
-      security:
-        - OAuth2: []
+      # Uses global OAuth2 security
       parameters:
         - name: supervisor-id
           in: header
@@ -974,6 +976,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+
 components:
   securitySchemes:
     OAuth2:
@@ -982,7 +985,9 @@ components:
         authorizationCode:
           authorizationUrl: https://login.microsoftonline.com/4c4d3e48-7132-4338-b2f8-2247be35ee76/oauth2/v2.0/authorize
           tokenUrl: https://login.microsoftonline.com/4c4d3e48-7132-4338-b2f8-2247be35ee76/oauth2/v2.0/token
-          scopes: {}
+          scopes:
+            read: Read access to resources
+            write: Write access to resources
 
   schemas:
     Mood:
