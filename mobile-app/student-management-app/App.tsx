@@ -32,7 +32,7 @@ export default function App() {
   useEffect(() => {
     // Load last route name from storage
     AsyncStorage.getItem(LAST_ROUTE_KEY).then((route) => {
-      setInitialRoute(route || "Welcome!");
+      setInitialRoute(route || "Welcome");
     });
   }, []);
 
