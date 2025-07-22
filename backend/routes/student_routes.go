@@ -48,4 +48,7 @@ func RegisterStudentRoutes(router *mux.Router) {
 
 	router.HandleFunc("/get-supervisor-ids", controllers.GetAllSupervisorIDsAndNames).Methods("GET")
 	// router.HandleFunc("/get-employer-ids", controllers.GetAllEmployerIDsAndNames).Methods("GET")
+
+	// Manager feedback route
+	router.HandleFunc("/manager-feedback", controllers.FetchManagerFeedback).Methods("GET")
 }
