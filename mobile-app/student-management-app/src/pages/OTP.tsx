@@ -28,7 +28,7 @@ const OTP: React.FC<Props> = ({ navigation }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "api-key": String(process.env.EXPO_PUBLIC_API_KEY ?? ""),
+          
           "otp-code": otp,
         },
       });

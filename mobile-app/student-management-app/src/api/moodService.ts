@@ -16,7 +16,6 @@ export const postMood = async (mood: MoodType, type: 'checkin' | 'checkout') => 
       headers: {
         'Content-Type': 'application/json',
         'student-id': student_id.trim(),
-        'api-key': String(process.env.EXPO_PUBLIC_API_KEY ?? ''),
       },
       body: JSON.stringify({
         emotion: mood,

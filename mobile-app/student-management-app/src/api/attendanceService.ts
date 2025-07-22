@@ -14,7 +14,6 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
         accept: 'application/json',
         'student-id': student_id.trim(),
         'Content-Type': 'application/json',
-        'api-key': String(process.env.EXPO_PUBLIC_API_KEY ?? ''),
       },
       body: JSON.stringify({
         check_in: true,
@@ -48,7 +47,6 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
         accept: 'application/json',
         'student-id': student_id.trim(),
         'Content-Type': 'application/json',
-        'api-key': String(process.env.EXPO_PUBLIC_API_KEY ?? ''),
       },
       body: JSON.stringify({
         check_in: false,

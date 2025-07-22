@@ -2,7 +2,7 @@
   "expo": {
     "name": "Worky",
     "slug": "worky",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.sachintha_wso2.studentmanagementapp",
-      "versionCode": 4
+      "versionCode": 5
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -28,7 +28,7 @@
         "projectId": "a704672c-6fca-4644-b5d2-88c9dcf0662e"
       }
     },
-    "runtimeVersion": "1.0.4",
+    "runtimeVersion": "1.0.5",
     "updates": {
       "url": "https://u.expo.dev/a704672c-6fca-4644-b5d2-88c9dcf0662e"
     },
