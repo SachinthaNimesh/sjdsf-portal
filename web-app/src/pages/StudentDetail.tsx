@@ -109,8 +109,7 @@ const StudentDetail = () => {
     name: studentInfo
       ? `${studentInfo.first_name} ${studentInfo.last_name}`
       : "Student",
-    employer: "",
-    photoUrl: "",
+    employer_name: studentInfo?.employer_name || "",
     guardian_contact_no: studentInfo?.contact_number_guardian || "",
     employer_contact_no: studentInfo?.contact_number || "",
     ...studentInfo,
@@ -167,7 +166,7 @@ const StudentDetail = () => {
                 </p>
                 <p className="text-gray-500 text-sm mb-1">
                   Employer:{" "}
-                  <span className="font-medium">{employee.employer}</span>
+                  <span className="font-medium">{employee.employer_name}</span>
                 </p>
                 <div className="flex gap-4 mt-2">
                   <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 text-xs font-semibold shadow">
