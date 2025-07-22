@@ -1,10 +1,11 @@
-import axios from 'axios';
+import axios from "axios";
 import { API_URL } from "../config/configs";
-import  {appConfig}  from "../config/configs";
+import { appConfig } from "../config/configs";
 
 export interface StudentInfo {
   first_name: string;
   last_name: string;
+  employer_name?: string; // Optional, if not available
   gender: string;
   contact_number: string;
   contact_number_guardian: string;
@@ -28,14 +29,16 @@ export interface TraineeProfileResponse {
   recent_moods: Mood[];
   recent_attendance: AttendanceRecord[];
 }
-export async function getTraineeProfile(studentId: number): Promise<TraineeProfileResponse> {
+export async function getTraineeProfile(
+  studentId: number
+): Promise<TraineeProfileResponse> {
   const response = await axios.get<TraineeProfileResponse>(
     `${API_URL}/trainee-profile`,
     {
       headers: {
-        'accept': 'application/json',
-        'api-key': appConfig.VITE_API_KEY,
-        'student-id': studentId.toString(),
+        accept: "application/json",
+        "api-key": appConfig.VITE_API_KEY,
+        "student-id": studentId.toString(),
       },
     }
   );
