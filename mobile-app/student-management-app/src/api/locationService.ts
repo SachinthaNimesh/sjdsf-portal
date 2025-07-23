@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import * as Location from 'expo-location';
+import { Alert, Linking } from 'react-native';
 
 export interface LocationInfo {
   latitude: number | null;
@@ -23,7 +24,7 @@ export const useLocation = () => {
 
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;
-
+  
     const getDeviceLocation = async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -36,8 +37,24 @@ export const useLocation = () => {
           return;
         }
 
+        // Check if location services are enabled
+        const enabled = await Location.hasServicesEnabledAsync();
+    if (!enabled)    {
+
+    Alert.alert(
+      "Location Disabled",
+      "Please enable location services in your device settings.",
+      [
+        {
+          text: "Open Settings",
+          onPress: () => Linking.openSettings(),
+        }
+      ]
+    )
+        }
+
         locationSubscription = await Location.watchPositionAsync(
-          { accuracy: Location.Accuracy.Highest, timeInterval: 1000*60, distanceInterval: 10 },
+          { accuracy: Location.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 50 },
           (deviceLocation) => {
             setLocationInfo({
               coords: deviceLocation.coords,
@@ -52,7 +69,11 @@ export const useLocation = () => {
           }
         );
       } catch (error) {
-        console.error("Error getting location: ", error);
+        console.error("Location Error details: ",{
+          message: error instanceof Error ? error.message : String(error),
+          code: error instanceof Error && 'code' in error ? (error as any).code : undefined,
+          type: typeof error
+        });
         setLocationInfo(prev => ({
           ...prev,
           loading: false,

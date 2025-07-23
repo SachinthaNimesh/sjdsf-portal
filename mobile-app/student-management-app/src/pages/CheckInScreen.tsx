@@ -66,7 +66,6 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     const unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
         setShowNoInternet(false);
-        // No need to relaunch the app, just hide the no internet card
       }
     });
     return () => unsubscribe();
@@ -80,7 +79,7 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
 
       // Retry for up to 15 seconds if location is not available
       let retries = 0;
-      let maxRetries = 15;
+      let maxRetries = 10;
       let lat = latitude;
       let lon = longitude;
 
