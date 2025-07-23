@@ -438,6 +438,17 @@ const StudentManagement = () => {
     return errors;
   }
 
+  // Helper for DOB input: restrict max date to today, min date to 100 years ago
+  const today = new Date();
+  const maxDate = today.toISOString().split("T")[0];
+  const minDate = new Date(
+    today.getFullYear() - 50, // 50 years ago
+    today.getMonth(),
+    today.getDate()
+  )
+    .toISOString()
+    .split("T")[0];
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-blue-100 to-indigo-100">
       <div className="flex flex-1">
@@ -656,6 +667,8 @@ const StudentManagement = () => {
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
                     className="mt-1.5 bg-white/80"
+                    min={minDate}
+                    max={maxDate}
                   />
                   {formErrors.dob && (
                     <span className="text-red-600 text-xs">
