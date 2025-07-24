@@ -1,95 +1,74 @@
-import { useState, useEffect } from 'react';
-import * as Location from 'expo-location';
-import { Alert, Linking } from 'react-native';
+import { useState, useCallback } from "react";
+import { Platform, Alert, Linking } from "react-native";
+import * as Location from "expo-location";
 
-export interface LocationInfo {
-  latitude: number | null;
-  longitude: number | null;
-}
+type UseLocationOptions = {
+  enableRetry?: boolean;
+  maxRetries?: number;
+  timeoutMs?: number;
+};
 
-export const useLocation = () => {
-  const [locationInfo, setLocationInfo] = useState<{
-    coords: Location.LocationObjectCoords | null;
-    loading: boolean;
-    error: string | null;
-    latitude: number | null;
-    longitude: number | null;
-  }>({
-    coords: null,
-    loading: true,
-    error: null,
-    latitude: null,
-    longitude: null,
-  });
+export const useLocation = (options: UseLocationOptions = {}) => {
+  const { enableRetry = false, maxRetries = 10 } = options;
 
-  useEffect(() => {
-    let locationSubscription: Location.LocationSubscription | null = null;
-  
-    const getDeviceLocation = async () => {
-      try {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== 'granted') {
-          setLocationInfo(prev => ({
-            ...prev,
-            loading: false,
-            error: 'Permission to access location was denied',
-          }));
-          return;
-        }
+  const [latitude, setLatitude] = useState<number | null>(null);
+  const [longitude, setLongitude] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-        // Check if location services are enabled
-        const enabled = await Location.hasServicesEnabledAsync();
-    if (!enabled)    {
+  const getCurrentLocation = useCallback(async () => {
+    setLoading(true);
+    setError(null);
 
-    Alert.alert(
-      "Location Disabled",
-      "Please enable location services in your device settings.",
-      [
-        {
-          text: "Open Settings",
-          onPress: () => Linking.openSettings(),
-        }
-      ]
-    )
-        }
 
-        locationSubscription = await Location.watchPositionAsync(
-          { accuracy: Location.Accuracy.Balanced, timeInterval: 5000, distanceInterval: 50 },
-          (deviceLocation) => {
-            setLocationInfo({
-              coords: deviceLocation.coords,
-              loading: false,
-              error: null,
-              latitude: deviceLocation.coords.latitude,
-              longitude: deviceLocation.coords.longitude,
-            });
 
-            console.log("Latitude:", deviceLocation.coords.latitude);
-            console.log("Longitude:", deviceLocation.coords.longitude);
-          }
-        );
-      } catch (error) {
-        console.error("Location Error details: ",{
-          message: error instanceof Error ? error.message : String(error),
-          code: error instanceof Error && 'code' in error ? (error as any).code : undefined,
-          type: typeof error
-        });
-        setLocationInfo(prev => ({
-          ...prev,
-          loading: false,
-          error: error instanceof Error ? error.message : 'An unknown error occurred',
-        }));
-      }
-    };
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      setError("Permission to access location was denied");
+      setLoading(false);
+      return false;
+    }
 
-    getDeviceLocation();
-
-    return () => {
-      if (locationSubscription) {
-        locationSubscription.remove();
-      }
-    };
+    try {
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+      setLatitude(location.coords.latitude);
+      setLongitude(location.coords.longitude);
+      setLoading(false);
+      setError(null);
+      console.log("Location fetched successfully:", location.coords);
+      return true;
+    } catch (e: any) {
+      setError(e?.message || "Failed to get location");
+      setLoading(false);
+      return false;
+    }
   }, []);
 
-  return { latitude: locationInfo.latitude, longitude: locationInfo.longitude };
-}; 
+  const refreshLocation = useCallback(async () => {
+    let attempts = 0;
+    let success = false;
+    while (!success && (enableRetry ? attempts < maxRetries : attempts < 1)) {
+      success = await getCurrentLocation();
+      attempts++;
+      if (!success && enableRetry) {
+        await new Promise((res) => setTimeout(res, 1000));
+      }
+    }
+    return success;
+  }, [enableRetry, maxRetries, getCurrentLocation]);
+
+  // Initial fetch
+  useState(() => {
+    refreshLocation();
+  });
+
+  return {
+    latitude,
+    longitude,
+    loading,
+    error,
+    refreshLocation,
+  };
+};
