@@ -1,3 +1,5 @@
+// This file is not being used in the current implementation.
+
 import { useState, useCallback } from "react";
 import * as Location from "expo-location";
 
@@ -55,11 +57,6 @@ export const useLocation = (options: UseLocationOptions = {}) => {
     }
     return success;
   }, [enableRetry, maxRetries, getCurrentLocation]);
-
-  // // Initial fetch
-  // useState(() => {
-  //   getCurrentLocation();
-  // });
 
   return {
     latitude,

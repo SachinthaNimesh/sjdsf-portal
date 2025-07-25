@@ -1,11 +1,20 @@
 // TODO seems like locationFetching happends twice
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Easing } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+
+
+} from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useLocation } from "../api/locationService";
 import { postCheckIn } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import styles from "./CheckInScreen.styles"; // Assuming styles are defined in a separate file
+import { getCurrentLocationOnce } from "../api/locationOnceService";
+import Loader from "../components/Loader"; // Assuming Loader is a separate component
+import OfflineNotice from "../components/OfflineNotice";
+
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
@@ -20,16 +29,16 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     fullDate: "",
   });
 
-  const {
-    latitude,
-    longitude,
-    loading: locationLoading,
-    refreshLocation,
-  } = useLocation({
-    enableRetry: true,
-    maxRetries: 5,
-    timeoutMs: 5000,
-  });
+  // const {
+  //   latitude,
+  //   longitude,
+  //   loading: locationLoading,
+  //   refreshLocation,
+  // } = useLocation({
+  //   enableRetry: true,
+  //   maxRetries: 5,
+  //   timeoutMs: 5000,
+  // });
   // const [showWelcome, setShowWelcome] = useState(true);
   const [showNoInternet, setShowNoInternet] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +88,7 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     const intervalId = setInterval(updateDateTime, 1000);
 
     return () => clearInterval(intervalId);
-  }, []);// removed showWelcome dependancy
+  }, []); // removed showWelcome dependancy
 
   useEffect(() => {
     if (!showNoInternet) return;
@@ -97,8 +106,9 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
       setLoading(true);
       setError(null);
 
-      console.log('Refreshing Location...')
-      await refreshLocation();
+      const { latitude, longitude } = await getCurrentLocationOnce();
+      // console.log('Refreshing Location...')
+      // await refreshLocation();
 
       // const start = Date.now();
       // const timeout = 1000; // 1 second
@@ -115,13 +125,13 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
         latitude,
         "longitude#:",
         longitude,
-        "loading#:",
-        locationLoading
+        "loading#:"
+        // locationLoading
       );
 
       if (latitude == null || longitude == null) {
         setLoading(false);
-        setError("Please try again.");
+        setError("Coordinates N/A. Please try again.");
         return;
       }
       await postCheckIn(latitude, longitude);
@@ -145,7 +155,7 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     } finally {
       setLoading(false);
     }
-  }, [longitude, latitude, loading, navigation]);
+  }, [loading, navigation]);
 
   useEffect(() => {
     if (error) {
@@ -159,82 +169,10 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
   //   console.log("latitude:", latitude, "longitude:", longitude, "loading:", locationLoading);
   // }, [latitude, longitude, locationLoading]);
 
-  const Loader = () => {
-    const rotateAnim = React.useRef(new Animated.Value(0)).current;
-
-    useEffect(() => {
-      const animation = Animated.loop(
-        Animated.timing(rotateAnim, {
-          toValue: 1,
-          duration: 1000,
-          easing: Easing.linear,
-          useNativeDriver: true,
-        })
-      );
-      animation.start();
-      return () => animation.stop();
-    }, [rotateAnim]);
-
-    const spin = rotateAnim.interpolate({
-      inputRange: [0, 1],
-      outputRange: ["0deg", "360deg"],
-    });
-
-    return (
-      <View style={{ alignItems: "center", justifyContent: "center", height: 50 }}>
-        <Animated.View
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 25,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "transparent",
-            transform: [{ rotate: spin }],
-          }}
-        >
-          {/* Arc (partial circle) */}
-          <View
-            style={styles.loaderArc}
-          />
-          {/* Orange dot at the top */}
-          <View
-            style={styles.loadLocationContainer}
-          />
-        </Animated.View>
-      </View>
-    );
-  };
+  
   if (showNoInternet) {
     return (
-      <View
-        style={[
-          StyleSheet.absoluteFill,
-          styles.container,
-          {
-            zIndex: 999,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 0,
-          },
-        ]}
-      >
-        {/* Fullscreen overlay card */}
-        <View />
-        {/* Centered popup card */}
-        <View
-          style={styles.noInternetCard}
-          accessibilityRole="alert"
-          accessibilityLabel="No Internet Connection"
-        >
-          <Text style={styles.noInternetEmoji}>🛜</Text>
-          <Text style={styles.noInternetTitle}>No Internet Connection</Text>
-          <Text style={styles.noInternetMsg}>
-            Turn Mobile Data or Wifi On 🛜
-          </Text>
-          <Text style={styles.noInternetWait}>Waiting for connection...</Text>
-        </View>
-      </View>
+      <OfflineNotice />
     );
   }
 
@@ -277,26 +215,18 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         </View>
         <TouchableOpacity
-          style={[
-            styles.checkinButton,
-            (loading || locationLoading) && styles.buttonDisabled
-          ]}
+          style={[styles.checkinButton, loading && styles.buttonDisabled]}
           onPress={handleCheckIn}
-          disabled={loading || locationLoading}
+          disabled={loading}
           accessibilityRole="button"
           accessibilityLabel="Check In"
         >
-          {locationLoading || latitude == null || longitude == null ? (
-            <Loader />
-          ) : (
-            <Text style={styles.buttonText}>
-              IN
-            </Text>
-          )}
+          {loading ? <Loader /> : <Text style={styles.buttonText}>IN</Text>}
         </TouchableOpacity>
       </View>
     </View>
   );
 };
+
 
 export default CheckInScreen;

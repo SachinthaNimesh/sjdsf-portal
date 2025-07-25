@@ -8,61 +8,48 @@ const styles = StyleSheet.create({
     backgroundColor: "#667eea",
     padding: 20,
   },
-  welcomeText: {
-    fontSize: 48,
-    color: "white",
-    fontWeight: "bold",
-  },
   card: {
     backgroundColor: "rgba(255,255,255,0.95)",
     borderRadius: 25,
     padding: 30,
     width: "100%",
     maxWidth: 400,
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 20 },
     shadowOpacity: 0.1,
     shadowRadius: 40,
     elevation: 5,
   },
+  icon: {
+    fontSize: 80,
+    marginBottom: 20,
+  },
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#667eea",
-  },
-  locationInfo: {
-    marginBottom: 30,
-  },
-  infoRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(102, 126, 234, 0.1)",
-    borderRadius: 15,
-    padding: 12,
-    marginBottom: 10,
-  },
-  icon: {
-    fontSize: 20,
-    marginRight: 12,
-  },
-  infoText: {
-    fontSize: 18,
-    fontWeight: "500",
     color: "#2c3e50",
+    marginBottom: 20,
   },
-  checkinButton: {
+  button: {
     width: "100%",
     padding: 18,
     borderRadius: 20,
-    backgroundColor: "#27ae60",
+    backgroundColor: "#e53935",
     alignItems: "center",
-    alignSelf: "center",
+    flexDirection: "row",
+    justifyContent: "center",
   },
   buttonDisabled: {
     opacity: 0.6,
+  },
+  buttonContent: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  buttonEmoji: {
+    fontSize: 24,
+    marginRight: 10,
   },
   buttonText: {
     color: "white",
@@ -70,7 +57,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textTransform: "uppercase",
   },
-
   noInternetCard: {
     backgroundColor: "#fff",
     borderRadius: 20,
@@ -107,18 +93,6 @@ const styles = StyleSheet.create({
     color: "#aaa",
     textAlign: "center",
   },
-  loadingContainer: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    borderWidth: 6,
-    borderColor: "#fff",
-    borderTopColor: "#667eea",
-    alignSelf: "center",
-    marginBottom: 10,
-  },
-  
-
 });
 
 export default styles;

@@ -12,8 +12,8 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
     const checkStudentId = async () => {
       try {
         const studentId = await AsyncStorage.getItem('student_id');
-        // Wait for 3 seconds before navigating
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        // Wait for 3.5 seconds before navigating
+        await new Promise(resolve => setTimeout(resolve, 3500));
         
         if (studentId) {
           navigation.replace('CheckIn');
