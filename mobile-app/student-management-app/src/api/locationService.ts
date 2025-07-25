@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { Platform, Alert, Linking } from "react-native";
 import * as Location from "expo-location";
 
 type UseLocationOptions = {
@@ -19,8 +18,6 @@ export const useLocation = (options: UseLocationOptions = {}) => {
   const getCurrentLocation = useCallback(async () => {
     setLoading(true);
     setError(null);
-
-
 
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
@@ -59,10 +56,10 @@ export const useLocation = (options: UseLocationOptions = {}) => {
     return success;
   }, [enableRetry, maxRetries, getCurrentLocation]);
 
-  // Initial fetch
-  useState(() => {
-    refreshLocation();
-  });
+  // // Initial fetch
+  // useState(() => {
+  //   getCurrentLocation();
+  // });
 
   return {
     latitude,

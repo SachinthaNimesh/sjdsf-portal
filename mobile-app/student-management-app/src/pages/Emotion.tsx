@@ -103,10 +103,20 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
     try {
       setCheckoutLoading(true);
       setLoading(true);
+
+      await refreshLocation();
+            console.log(
+        "latitude#:",
+        latitude,
+        "longitude#:",
+        longitude,
+        "loading#:",
+        locationLoading
+      );
       if (latitude === null || longitude === null) {
         setCheckoutLoading(false);
         setLoading(false);
-        setErrorMsg('Location data is not available. Please try again.');
+        setErrorMsg('Please try again.');
         return;
       }
       await postCheckOut(latitude, longitude);
@@ -165,7 +175,7 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
           }
         }
       } catch (e) {
-        // Silent fail 
+      console.log('Error fetching student data:', e);
       }
     }
     fetchAndSetTimer();
