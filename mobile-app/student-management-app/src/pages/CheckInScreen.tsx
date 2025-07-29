@@ -11,7 +11,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { postCheckIn } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import styles from "./CheckInScreen.styles"; // Assuming styles are defined in a separate file
-import { getCurrentLocationOnce } from "../api/locationOnceService";
+import { getCurrentLocationOnce } from "../utils/location";
 import Loader from "../components/Loader"; // Assuming Loader is a separate component
 import OfflineNotice from "../components/OfflineNotice";
 

@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from '../../config/config';
+import { dispatchApiCall } from './wrapper/apiQueue';
 
 export const postCheckIn = async (latitude: number, longitude: number) => {
   try {
@@ -8,7 +8,8 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
       throw new Error('Student ID not found');
     }
 
-    const response = await fetch(`${BASE_URL}/attendance`, {
+    return await dispatchApiCall({
+      url: '/attendance',
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -21,13 +22,6 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
         check_in_long: longitude,
       }),
     });
-
-    if (!response.ok) {
-      throw new Error('Failed to post check-in');
-    }
-
-    const data = await response.json();
-    return data;
   } catch (error) {
     console.error('Error posting check-in:', error);
     throw error;
@@ -41,7 +35,8 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
       throw new Error('Student ID not found');
     }
 
-    const response = await fetch(`${BASE_URL}/attendance`, {
+    return await dispatchApiCall({
+      url: '/attendance',
       method: 'POST',
       headers: {
         accept: 'application/json',
@@ -50,17 +45,10 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
       },
       body: JSON.stringify({
         check_in: false,
-        check_in_lat: latitude, // Use check_in_lat for check-out
-        check_in_long: longitude,
+        check_out_lat: latitude,
+        check_out_long: longitude,
       }),
     });
-
-    if (!response.ok) {
-      throw new Error('Failed to post check-out');
-    }
-
-    const data = await response.json();
-    return data;
   } catch (error) {
     console.error('Error posting check-out:', error);
     throw error;
