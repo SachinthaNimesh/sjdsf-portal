@@ -34,6 +34,12 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		CheckIn   bool    `json:"check_in"`
 		Latitude  float64 `json:"check_in_lat"`
 		Longitude float64 `json:"check_in_long"`
+		Timestamp string  `json:"timestamp"`
+	}
+	checkInTime, err := time.Parse(time.RFC3339, requestData.Timestamp)
+	if err != nil {
+		http.Error(w, "Invalid timestamp format", http.StatusBadRequest)
+		return
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
@@ -65,7 +71,7 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		attendance.StudentID = studentID
 		attendance.CheckInLat = requestData.Latitude
 		attendance.CheckInLong = requestData.Longitude
-		attendance.CheckInDateTime = time.Now()
+		attendance.CheckInDateTime = checkInTime
 
 		log.Println("Creating new check-in record")
 		query := `INSERT INTO attendance (student_id, check_in_lat, check_in_long, check_in_date_time) VALUES ($1, $2, $3, $4) RETURNING id, student_id, check_in_lat, check_in_long, check_in_date_time`
