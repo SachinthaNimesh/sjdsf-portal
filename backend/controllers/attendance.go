@@ -11,6 +11,28 @@ import (
 	"time"
 )
 
+// getStartAndEndOfDay returns the UTC start and end time for the current day.
+func getStartAndEndOfDay() (time.Time, time.Time) {
+	now := time.Now().UTC()
+	startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	endOfDay := startOfDay.Add(24 * time.Hour)
+	return startOfDay, endOfDay
+}
+
+// findTodayAttendance tries to find today's attendance record for a student.
+func findTodayAttendance(studentID int, startOfDay, endOfDay time.Time) (models.Attendance, error) {
+	var attendance models.Attendance
+	query := `SELECT id, student_id, check_in_lat, check_in_long, check_in_date_time, check_out_lat, check_out_long, check_out_date_time 
+                  FROM attendance 
+                  WHERE student_id = $1 AND check_in_date_time >= $2 AND check_in_date_time < $3 
+                  ORDER BY check_in_date_time DESC LIMIT 1`
+	log.Printf("Select Query: %s", query)
+	log.Printf("Select Params: student_id=%d, start=%v, end=%v", studentID, startOfDay, endOfDay)
+	row := database.DB.QueryRow(query, studentID, startOfDay, endOfDay)
+	err := row.Scan(&attendance.ID, &attendance.StudentID, &attendance.CheckInLat, &attendance.CheckInLong, &attendance.CheckInDateTime, &attendance.CheckOutLat, &attendance.CheckOutLong, &attendance.CheckOutDateTime)
+	return attendance, err
+}
+
 func PostAttendance(w http.ResponseWriter, r *http.Request) {
 	log.Println("Received attendance request")
 
@@ -34,6 +56,7 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		CheckIn   bool    `json:"check_in"`
 		Latitude  float64 `json:"check_in_lat"`
 		Longitude float64 `json:"check_in_long"`
+		Timestamp string  `json:"timestamp"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
@@ -42,16 +65,20 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	checkInTime, err := time.Parse(time.RFC3339, requestData.Timestamp)
+	if err != nil {
+		http.Error(w, "Invalid timestamp format", http.StatusBadRequest)
+		return
+	}
+
 	log.Printf("Request data: check_in=%v, lat=%f, long=%f",
 		requestData.CheckIn, requestData.Latitude, requestData.Longitude)
 
 	var attendance models.Attendance
+	startOfDay, endOfDay := getStartAndEndOfDay()
+
 	if requestData.CheckIn {
 		// Delete any existing records for today first
-		now := time.Now().UTC()
-		startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-		endOfDay := startOfDay.Add(24 * time.Hour)
-
 		deleteQuery := `DELETE FROM attendance WHERE student_id = $1 AND check_in_date_time >= $2 AND check_in_date_time < $3`
 		log.Printf("Delete Query: %s", deleteQuery)
 		log.Printf("Delete Params: student_id=%d, start=%v, end=%v", studentID, startOfDay, endOfDay)
@@ -65,7 +92,7 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		attendance.StudentID = studentID
 		attendance.CheckInLat = requestData.Latitude
 		attendance.CheckInLong = requestData.Longitude
-		attendance.CheckInDateTime = time.Now()
+		attendance.CheckInDateTime = checkInTime
 
 		log.Println("Creating new check-in record")
 		query := `INSERT INTO attendance (student_id, check_in_lat, check_in_long, check_in_date_time) VALUES ($1, $2, $3, $4) RETURNING id, student_id, check_in_lat, check_in_long, check_in_date_time`
@@ -80,20 +107,8 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		}
 		log.Printf("Check-in record created: %+v", attendance)
 	} else {
-		now := time.Now().UTC()
-		startOfDay := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
-		endOfDay := startOfDay.Add(24 * time.Hour)
-
 		// Try to find existing record for today
-		query := `SELECT id, student_id, check_in_lat, check_in_long, check_in_date_time, check_out_lat, check_out_long, check_out_date_time 
-                  FROM attendance 
-                  WHERE student_id = $1 AND check_in_date_time >= $2 AND check_in_date_time < $3 
-                  ORDER BY check_in_date_time DESC LIMIT 1`
-		log.Printf("Select Query: %s", query)
-		log.Printf("Select Params: student_id=%d, start=%v, end=%v", studentID, startOfDay, endOfDay)
-		row := database.DB.QueryRow(query, studentID, startOfDay, endOfDay)
-		err := row.Scan(&attendance.ID, &attendance.StudentID, &attendance.CheckInLat, &attendance.CheckInLong, &attendance.CheckInDateTime, &attendance.CheckOutLat, &attendance.CheckOutLong, &attendance.CheckOutDateTime)
-
+		attendance, err = findTodayAttendance(studentID, startOfDay, endOfDay)
 		if err == sql.ErrNoRows {
 			// No check-in record exists, create a new record with zero check-in values and actual checkout data
 			log.Println("No check-in record found, creating checkout record with zero check-in values")
@@ -103,7 +118,7 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 			attendance.CheckInDateTime = time.Time{} // zero timestamp
 			attendance.CheckOutLat = sql.NullFloat64{Float64: requestData.Latitude, Valid: true}
 			attendance.CheckOutLong = sql.NullFloat64{Float64: requestData.Longitude, Valid: true}
-			attendance.CheckOutDateTime = sql.NullTime{Time: time.Now(), Valid: true}
+			attendance.CheckOutDateTime = sql.NullTime{Time: checkInTime, Valid: true}
 
 			insertQuery := `INSERT INTO attendance (student_id, check_in_lat, check_in_long, check_in_date_time, check_out_lat, check_out_long, check_out_date_time) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
 			log.Printf("Insert Query: %s", insertQuery)
@@ -125,7 +140,7 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 
 			attendance.CheckOutLat = sql.NullFloat64{Float64: requestData.Latitude, Valid: true}
 			attendance.CheckOutLong = sql.NullFloat64{Float64: requestData.Longitude, Valid: true}
-			attendance.CheckOutDateTime = sql.NullTime{Time: time.Now(), Valid: true}
+			attendance.CheckOutDateTime = sql.NullTime{Time: checkInTime, Valid: true}
 
 			log.Println("Updating existing record with check-out data")
 			updateQuery := `UPDATE attendance SET check_out_lat = $1, check_out_long = $2, check_out_date_time = $3 WHERE id = $4`

@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { postCheckOut } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import LottieView from 'lottie-react-native';
-import { getCurrentLocationOnce } from "../api/locationOnceService";
+import { getCurrentLocationOnce } from "../utils/location";
 import styles from "./CheckOutScreen.styles";
 import Loader from "../components/Loader";
 import OfflineNotice from "../components/OfflineNotice";

@@ -3,19 +3,16 @@ import {
   View,
   Text,
   TouchableOpacity,
-  StyleSheet,
   Animated,
   ActivityIndicator,
-  Alert,
 } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { postMood, MoodType } from "../api/moodService";
 import { postCheckOut } from "../api/attendanceService";
-import { useLocation } from "../api/locationService";
 import NetInfo from "@react-native-community/netinfo";
 import FloatingActionButton from "../components/FAB";
 import { getStudentById } from "../api/studentService";
-import { getCurrentLocationOnce } from "../api/locationOnceService";
+import { getCurrentLocationOnce } from "../utils/location";
 import styles from "./Emotion.styles";
 import OfflineNotice from "../components/OfflineNotice";
 type Props = {
@@ -32,7 +29,6 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [activeMood, setActiveMood] = useState<MoodType | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  // const { latitude, longitude } = useLocation();
   const [showNoInternet, setShowNoInternet] = useState(false);
   const [checkOutTime, setCheckOutTime] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);

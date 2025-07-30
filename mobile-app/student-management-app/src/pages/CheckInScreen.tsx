@@ -1,17 +1,11 @@
 // TODO seems like locationFetching happends twice
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  View,
-  Text,
-  TouchableOpacity,
-
-
-} from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { postCheckIn } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import styles from "./CheckInScreen.styles"; // Assuming styles are defined in a separate file
-import { getCurrentLocationOnce } from "../api/locationOnceService";
+import { getCurrentLocationOnce } from "../utils/location";
 import Loader from "../components/Loader"; // Assuming Loader is a separate component
 import OfflineNotice from "../components/OfflineNotice";
 
@@ -169,11 +163,8 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
   //   console.log("latitude:", latitude, "longitude:", longitude, "loading:", locationLoading);
   // }, [latitude, longitude, locationLoading]);
 
-  
   if (showNoInternet) {
-    return (
-      <OfflineNotice />
-    );
+    return <OfflineNotice />;
   }
 
   // if (showWelcome) {
@@ -227,6 +218,5 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     </View>
   );
 };
-
 
 export default CheckInScreen;
