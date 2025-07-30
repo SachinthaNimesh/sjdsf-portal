@@ -12,7 +12,6 @@ export const postMood = async (
     const timestamp = new Date().toISOString();
     if (!student_id) {
       throw new Error("Student ID not found");
-      throw new Error("Student ID not found");
     }
 
     return await dispatchApiCall({
@@ -23,11 +22,12 @@ export const postMood = async (
         "student-id": student_id.trim(),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: {
         emotion: mood,
         is_daily: type === "checkin" ? false : true,
         timestamp,
-      }),
+      },
+
     });
   } catch (error) {
     console.error("Error posting mood:", error);

@@ -17,12 +17,13 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
         "student-id": student_id.trim(),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: {
         check_in: true,
         check_in_lat: latitude,
         check_in_long: longitude,
         timestamp,
-      }),
+      },
+
     });
   } catch (error) {
     console.error("Error posting check-in:", error);
@@ -47,16 +48,16 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
         "student-id": student_id.trim(),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      body: {
         check_in: false,
         check_in_lat: latitude,
         check_in_long: longitude,
         timestamp,
-      }),
+      },
     });
   } catch (error) {
     console.error("Error posting check-out:", error);
     throw error;
   }
 };
-     
+
