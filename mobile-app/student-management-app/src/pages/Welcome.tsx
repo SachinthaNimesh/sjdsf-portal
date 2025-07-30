@@ -1,8 +1,15 @@
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { 
+  View, 
+  Dimensions 
+} from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import styles from './Welcome.styles'; // Assuming styles are defined in a separate file
+import WelcomeAnimation from '../components/WelcomeAnimation';
+import styles from './Welcome.styles';
+
+const { height } = Dimensions.get('window');
+
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
@@ -12,9 +19,8 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
     const checkStudentId = async () => {
       try {
         const studentId = await AsyncStorage.getItem('student_id');
-        // Wait for 3.5 seconds before navigating
-        await new Promise(resolve => setTimeout(resolve, 3500));
-        
+        // Wait for 4 seconds before navigating
+        await new Promise(resolve => setTimeout(resolve, 4000));
         if (studentId) {
           navigation.replace('CheckIn');
         } else {
@@ -31,11 +37,9 @@ const Welcome: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Worky</Text>
+      <WelcomeAnimation />
     </View>
   );
 };
-
-
 
 export default Welcome;

@@ -32,7 +32,7 @@ const NavigationStack = ({ initialRoute }: { initialRoute: string }) => (
     </Stack.Screen>
     <Stack.Screen name="WelcomeGreeting">
       {(props) => (
-        <Layout>
+        <Layout hideHeader>
           <WelcomeGreeting {...props} />
         </Layout>
       )}
@@ -60,14 +60,14 @@ const NavigationStack = ({ initialRoute }: { initialRoute: string }) => (
     </Stack.Screen>
     <Stack.Screen name="CheckOutGreeting">
       {(props) => (
-        <Layout>
+        <Layout hideHeader>
           <CheckOutGreeting {...props} />
         </Layout>
       )}
     </Stack.Screen>
     <Stack.Screen name="PostEmotion">
       {(props) => (
-        <Layout>
+        <Layout hideHeader>
           <PostEmotion {...props} />
         </Layout>
       )}

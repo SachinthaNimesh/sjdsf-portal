@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import LottieView from "lottie-react-native";
 import { updateCheckOutTime } from "../api/studentService";
 import styles from "./WelcomeGreeting.styles";
+import WelcomeAnimation from "../components/WelcomeAnimation"; // <-- import
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -11,6 +12,7 @@ type Props = {
 
 const WelcomeGreeting: React.FC<Props> = ({ navigation }) => {
   const [welcomeText, setWelcomeText] = useState("");
+  const [showAnimation, setShowAnimation] = useState(false);
 
   useEffect(() => {
     // Update check_out_time when WelcomeGreeting loads
@@ -32,15 +34,23 @@ const WelcomeGreeting: React.FC<Props> = ({ navigation }) => {
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     setWelcomeText(randomMessage);
 
-    const timer = setTimeout(() => {
-      navigation.replace("Emotions");
-      setTimeout(() => {
-        BackHandler.exitApp();
-      }, 0.1);
+    const timer1 = setTimeout(() => {
+      setShowAnimation(true);
+      const timer2 = setTimeout(() => {
+        navigation.replace("Emotions");
+        setTimeout(() => {
+          BackHandler.exitApp();
+        }, 0.1);
+      }, 1000);
+      return () => clearTimeout(timer2);
     }, 3000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer1);
   }, [navigation]);
+
+  if (showAnimation) {
+    return <WelcomeAnimation />;
+  }
 
   return (
     <View style={styles.container}>
