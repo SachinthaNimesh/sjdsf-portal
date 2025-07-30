@@ -23,6 +23,7 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
         check_in_long: longitude,
         timestamp,
       },
+
     });
   } catch (error) {
     console.error("Error posting check-in:", error);
@@ -59,3 +60,4 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
     throw error;
   }
 };
+

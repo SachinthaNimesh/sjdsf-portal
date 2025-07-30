@@ -27,6 +27,7 @@ export const postMood = async (
         is_daily: type === "checkin" ? false : true,
         timestamp,
       },
+
     });
   } catch (error) {
     console.error("Error posting mood:", error);
