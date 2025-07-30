@@ -76,14 +76,14 @@ func CreateMood(w http.ResponseWriter, r *http.Request) {
 		Timestamp string `json:"timestamp"`
 	}
 
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	recordedAt, err := time.Parse(time.RFC3339, payload.Timestamp)
 	if err != nil {
 		log.Printf("Invalid timestamp format: %v", err)
 		http.Error(w, "Invalid timestamp format", http.StatusBadRequest)
-		return
-	}
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	mood := models.Mood{

@@ -31,7 +31,6 @@ export const postMood = async (
     });
   } catch (error) {
     console.error("Error posting mood:", error);
-    console.error("Error posting mood:", error);
     throw error;
   }
 };

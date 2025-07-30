@@ -22,7 +22,7 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
-      if (!state.isConnected) {
+      if (state.isConnected) {
         flushQueue();
       }
     });
