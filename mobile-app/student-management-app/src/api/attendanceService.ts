@@ -5,14 +5,21 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
   try {
     const student_id = await AsyncStorage.getItem("student_id");
     const timestamp = new Date().toISOString();
+    const student_id = await AsyncStorage.getItem("student_id");
+    const timestamp = new Date().toISOString();
     if (!student_id) {
+      throw new Error("Student ID not found");
       throw new Error("Student ID not found");
     }
 
+<<<<<<< HEAD
     return await dispatchApiCall({
       url: "/attendance",
       method: "POST",
       headers: {
+        accept: "application/json",
+        "student-id": student_id.trim(),
+        "Content-Type": "application/json",
         accept: "application/json",
         "student-id": student_id.trim(),
         "Content-Type": "application/json",
@@ -22,9 +29,21 @@ export const postCheckIn = async (latitude: number, longitude: number) => {
         check_in_lat: latitude,
         check_in_long: longitude,
         timestamp,
+        timestamp,
       }),
     });
+<<<<<<< HEAD
+=======
+
+    if (!response.ok) {
+      throw new Error("Failed to post check-in");
+    }
+    // check response code -> if 400 range ignore , 200 range return data
+    const data = await response.json();
+    return data;
+>>>>>>> 149221675f231e631c41de857a65531e899f014b
   } catch (error) {
+    console.error("Error posting check-in:", error);
     console.error("Error posting check-in:", error);
     throw error;
   }
@@ -37,8 +56,10 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
 
     if (!student_id) {
       throw new Error("Student ID not found");
+      throw new Error("Student ID not found");
     }
 
+<<<<<<< HEAD
     return await dispatchApiCall({
       url: "/attendance",
       method: "POST",
@@ -46,9 +67,13 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
         accept: "application/json",
         "student-id": student_id.trim(),
         "Content-Type": "application/json",
+        accept: "application/json",
+        "student-id": student_id.trim(),
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         check_in: false,
+<<<<<<< HEAD
         check_out_lat: latitude,
         check_out_long: longitude,
         timestamp,
@@ -56,6 +81,8 @@ export const postCheckOut = async (latitude: number, longitude: number) => {
     });
   } catch (error) {
     console.error("Error posting check-out:", error);
+    console.error("Error posting check-out:", error);
     throw error;
   }
 };
+

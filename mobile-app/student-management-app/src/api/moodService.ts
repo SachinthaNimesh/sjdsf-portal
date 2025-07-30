@@ -12,8 +12,10 @@ export const postMood = async (
     const timestamp = new Date().toISOString();
     if (!student_id) {
       throw new Error("Student ID not found");
+      throw new Error("Student ID not found");
     }
 
+<<<<<<< HEAD
     return await dispatchApiCall({
       url: "/post-mood",
       method: "POST",
@@ -29,6 +31,7 @@ export const postMood = async (
       }),
     });
   } catch (error) {
+    console.error("Error posting mood:", error);
     console.error("Error posting mood:", error);
     throw error;
   }

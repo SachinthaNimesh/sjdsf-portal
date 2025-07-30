@@ -58,6 +58,11 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		Longitude float64 `json:"check_in_long"`
 		Timestamp string  `json:"timestamp"`
 	}
+	checkInTime, err := time.Parse(time.RFC3339, requestData.Timestamp)
+	if err != nil {
+		http.Error(w, "Invalid timestamp format", http.StatusBadRequest)
+		return
+	}
 
 	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
 		log.Printf("Failed to decode request body: %v", err)
