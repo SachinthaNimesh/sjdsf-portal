@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, BackHandler } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import LottieView from "lottie-react-native";
+import { updateCheckOutTime } from "../api/studentService";
 import styles from "./WelcomeGreeting.styles";
 
 type Props = {
@@ -12,6 +13,12 @@ const WelcomeGreeting: React.FC<Props> = ({ navigation }) => {
   const [welcomeText, setWelcomeText] = useState("");
 
   useEffect(() => {
+    // Update check_out_time when WelcomeGreeting loads
+    updateCheckOutTime().catch((err) => {
+      // Optionally handle error
+      console.error("Failed to update check_out_time:", err);
+    });
+
     const messages = [
       "Let's do this!",
 

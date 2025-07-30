@@ -11,10 +11,11 @@ import { postMood, MoodType } from "../api/moodService";
 import { postCheckOut } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import FloatingActionButton from "../components/FAB";
-import { getStudentById } from "../api/studentService";
 import { getCurrentLocationOnce } from "../utils/location";
 import styles from "./Emotion.styles";
 import OfflineNotice from "../components/OfflineNotice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
@@ -141,13 +142,14 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
     let isMounted = true;
     async function fetchAndSetTimer() {
       try {
-        const student = await getStudentById();
+        // Always fetch check_out_time from AsyncStorage
+        const checkOutTimeValue = await AsyncStorage.getItem("check_out_time");
         if (!isMounted) return;
-        if (student?.check_out_time) {
-          setCheckOutTime(student.check_out_time);
+        if (checkOutTimeValue) {
+          setCheckOutTime(checkOutTimeValue);
 
           // Only use time (HH:MM:SS) for today
-          const [hh, mm, ss] = student.check_out_time.split(":").map(Number);
+          const [hh, mm, ss] = checkOutTimeValue.split(":").map(Number);
           const now = new Date();
           const nowSeconds =
             now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
