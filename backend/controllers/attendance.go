@@ -70,13 +70,6 @@ func PostAttendance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	checkInTime, err := time.Parse(time.RFC3339, requestData.Timestamp)
-	if err != nil {
-		log.Printf("Invalid timestamp format: %v", err)
-		http.Error(w, "Invalid timestamp format", http.StatusBadRequest)
-		return
-	}
-
 	log.Printf("Request data: check_in=%v, lat=%f, long=%f",
 		requestData.CheckIn, requestData.Latitude, requestData.Longitude)
 

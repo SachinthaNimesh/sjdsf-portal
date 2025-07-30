@@ -15,7 +15,6 @@ export const postMood = async (
       throw new Error("Student ID not found");
     }
 
-<<<<<<< HEAD
     return await dispatchApiCall({
       url: "/post-mood",
       method: "POST",
