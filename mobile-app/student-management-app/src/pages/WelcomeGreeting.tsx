@@ -5,6 +5,7 @@ import LottieView from "lottie-react-native";
 import { updateCheckOutTime } from "../api/studentService";
 import styles from "./WelcomeGreeting.styles";
 import WelcomeAnimation from "../components/WelcomeAnimation"; // <-- import
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = {
   navigation: NativeStackNavigationProp<any>;
@@ -17,8 +18,12 @@ const WelcomeGreeting: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     // Update check_out_time when WelcomeGreeting loads
     updateCheckOutTime().catch((err) => {
-      // Optionally handle error
-      console.error("Failed to update check_out_time:", err);
+      AsyncStorage.getItem("check_out_time").then((value) => {
+        console.log("Check-out time stored:", value);
+        if (!value) {
+          console.error("Failed to update check_out_time:", err);
+        }
+      });
     });
 
     const messages = [

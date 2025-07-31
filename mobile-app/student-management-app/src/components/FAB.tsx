@@ -11,8 +11,7 @@ import {
   Linking,
 } from 'react-native';
 import styles from './Fab.styles';
-// import Loader from './Loader';
-const { width, height } = Dimensions.get('window');
+import { getEmergencyContact } from '../api/emergencyContactService';
 
 interface ActionButtonProps {
   icon: React.ComponentType<any>;
@@ -42,8 +41,7 @@ const ActionButton: React.FC<ActionButtonProps & {
   icon: Icon,
   label,
   onPress,
-  delay = 0,
-  isExpanded,
+
   animatedValue,
   actionColor,
   labelColor,
@@ -124,6 +122,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps & { navigation?: 
   const animatedValue = useRef(new Animated.Value(0)).current;
   const rotationValue = useRef(new Animated.Value(0)).current;
   const backdropOpacity = useRef(new Animated.Value(0)).current;
+  const [emergencyContact, setEmergencyContact] = useState<string>('');
 
   useEffect(() => {
     const toValue = isExpanded ? 1 : 0;
@@ -146,6 +145,15 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps & { navigation?: 
     ]).start();
   }, [isExpanded]);
 
+  useEffect(() => {
+    // Fetch emergency contact each time FAB loads
+    const fetchContact = async () => {
+      const contact = await getEmergencyContact();
+      setEmergencyContact(contact);
+    };
+    fetchContact();
+  }, []);
+
   const handleToggle = () => {
     setIsExpanded(!isExpanded);
   };
@@ -156,7 +164,9 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps & { navigation?: 
     if (action === 'Message') {
       // Open chat/message functionality
     } else if (action === 'Call') {
-      Linking.openURL('tel:0776117145');
+      if (emergencyContact && emergencyContact.trim() !== '') {
+        Linking.openURL(`tel:${emergencyContact}`);
+      }
     }
   };
 

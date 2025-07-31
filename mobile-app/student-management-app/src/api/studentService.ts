@@ -79,7 +79,7 @@ export const updateCheckOutTime = async (): Promise<void> => {
 
     }
   } catch (error) {
-    console.error("Error updating check_out_time:", error);
-    throw error;
+    // console.error("Error updating check_out_time:", error);
+    // throw error;
   }
 };

@@ -31,7 +31,6 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
   const [activeMood, setActiveMood] = useState<MoodType | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showNoInternet, setShowNoInternet] = useState(false);
-  const [checkOutTime, setCheckOutTime] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const checkOutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -146,8 +145,6 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
         const checkOutTimeValue = await AsyncStorage.getItem("check_out_time");
         if (!isMounted) return;
         if (checkOutTimeValue) {
-          setCheckOutTime(checkOutTimeValue);
-
           // Only use time (HH:MM:SS) for today
           const [hh, mm, ss] = checkOutTimeValue.split(":").map(Number);
           const now = new Date();
@@ -181,9 +178,7 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
   }, [navigation]);
 
   if (showNoInternet) {
-    return (
-      <OfflineNotice />
-    );
+    return <OfflineNotice />;
   }
 
   return (
@@ -269,11 +264,7 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
             onCheckout={handleEarlyCheckout}
             navigation={navigation}
           />
-          {/* {checkoutLoading && (
-            <View style={styles.fabLoadingOverlay}>
-              <ActivityIndicator size="large" color="#8B7ED8" />
-            </View> */}
-          {/* )} */}
+        
         </View>
       </View>
     </View>

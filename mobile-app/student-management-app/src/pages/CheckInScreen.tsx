@@ -1,12 +1,11 @@
-// TODO seems like locationFetching happends twice
 import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { postCheckIn } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
-import styles from "./CheckInScreen.styles"; // Assuming styles are defined in a separate file
+import styles from "./CheckInScreen.styles"; 
 import { getCurrentLocationOnce } from "../utils/location";
-import Loader from "../components/Loader"; // Assuming Loader is a separate component
+import Loader from "../components/Loader"; 
 import OfflineNotice from "../components/OfflineNotice";
 
 type Props = {
@@ -23,28 +22,10 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     fullDate: "",
   });
 
-  // const {
-  //   latitude,
-  //   longitude,
-  //   loading: locationLoading,
-  //   refreshLocation,
-  // } = useLocation({
-  //   enableRetry: true,
-  //   maxRetries: 5,
-  //   timeoutMs: 5000,
-  // });
-  // const [showWelcome, setShowWelcome] = useState(true);
   const [showNoInternet, setShowNoInternet] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setShowWelcome(false), 2000);
-  //   return () => clearTimeout(timer);
-  // }, []);
-
   useEffect(() => {
-    // if (showWelcome) return;
-
     const updateDateTime = () => {
       const now = new Date();
       let hours = now.getHours();
@@ -82,7 +63,7 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     const intervalId = setInterval(updateDateTime, 1000);
 
     return () => clearInterval(intervalId);
-  }, []); // removed showWelcome dependancy
+  }, []);
 
   useEffect(() => {
     if (!showNoInternet) return;
@@ -101,18 +82,6 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
       setError(null);
 
       const { latitude, longitude } = await getCurrentLocationOnce();
-      // console.log('Refreshing Location...')
-      // await refreshLocation();
-
-      // const start = Date.now();
-      // const timeout = 1000; // 1 second
-
-      // while (
-      //   (latitude == null || longitude == null) &&
-      //   Date.now() - start < timeout
-      // ) {
-      //   await new Promise((res) => setTimeout(res, 300)); // Wait for 300ms before retrying
-      // }
 
       console.log(
         "latitude#:",
@@ -120,7 +89,6 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
         "longitude#:",
         longitude,
         "loading#:"
-        // locationLoading
       );
 
       if (latitude == null || longitude == null) {
@@ -158,34 +126,9 @@ const CheckInScreen: React.FC<Props> = ({ navigation }) => {
     }
   }, [error]);
 
-  // useEffect(()=> {
-  //   refreshLocation();
-  //   console.log("latitude:", latitude, "longitude:", longitude, "loading:", locationLoading);
-  // }, [latitude, longitude, locationLoading]);
-
   if (showNoInternet) {
     return <OfflineNotice />;
   }
-
-  // if (showWelcome) {
-  //   return (
-  //     <View
-  //       style={[
-  //         StyleSheet.absoluteFill,
-  //         styles.container,
-  //         { backgroundColor: "#667eea", zIndex: 999 },
-  //       ]}
-  //     >
-  //       <Text style={styles.welcomeText} accessibilityRole="header">
-  //         Welcome!
-  //       </Text>
-  //       <View style={{ marginTop: 30 }} />
-  //       <View
-  //         style={styles.loadingContainer}
-  //       />
-  //     </View>
-  //   );
-  // }
 
   return (
     <View style={styles.container}>
