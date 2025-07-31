@@ -11,10 +11,11 @@ import { postMood, MoodType } from "../api/moodService";
 import { postCheckOut } from "../api/attendanceService";
 import NetInfo from "@react-native-community/netinfo";
 import FloatingActionButton from "../components/FAB";
-import { getStudentById } from "../api/studentService";
 import { getCurrentLocationOnce } from "../utils/location";
 import styles from "./Emotion.styles";
 import OfflineNotice from "../components/OfflineNotice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 type Props = {
   navigation: NativeStackNavigationProp<any>;
 };
@@ -30,7 +31,6 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
   const [activeMood, setActiveMood] = useState<MoodType | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [showNoInternet, setShowNoInternet] = useState(false);
-  const [checkOutTime, setCheckOutTime] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const checkOutTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -141,13 +141,12 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
     let isMounted = true;
     async function fetchAndSetTimer() {
       try {
-        const student = await getStudentById();
+        // Always fetch check_out_time from AsyncStorage
+        const checkOutTimeValue = await AsyncStorage.getItem("check_out_time");
         if (!isMounted) return;
-        if (student?.check_out_time) {
-          setCheckOutTime(student.check_out_time);
-
+        if (checkOutTimeValue) {
           // Only use time (HH:MM:SS) for today
-          const [hh, mm, ss] = student.check_out_time.split(":").map(Number);
+          const [hh, mm, ss] = checkOutTimeValue.split(":").map(Number);
           const now = new Date();
           const nowSeconds =
             now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
@@ -179,9 +178,7 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
   }, [navigation]);
 
   if (showNoInternet) {
-    return (
-      <OfflineNotice />
-    );
+    return <OfflineNotice />;
   }
 
   return (
@@ -267,11 +264,7 @@ const Emotion: React.FC<Props> = ({ navigation }) => {
             onCheckout={handleEarlyCheckout}
             navigation={navigation}
           />
-          {/* {checkoutLoading && (
-            <View style={styles.fabLoadingOverlay}>
-              <ActivityIndicator size="large" color="#8B7ED8" />
-            </View> */}
-          {/* )} */}
+        
         </View>
       </View>
     </View>

@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { getStudentById } from '../api/studentService';
+import { View, Text } from 'react-native';
+import { getStudentFirstName } from '../api/studentService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
 import styles from './Header.styles';
 
 const Header: React.FC = () => {
@@ -16,20 +17,22 @@ const Header: React.FC = () => {
           setStudentName(cachedName);
           return;
         }
-        // If not found, fetch from API
-        const student = await getStudentById();
-        let firstName = '';
-        if (Array.isArray(student) && student.length > 0) {
-          firstName = student[0]?.first_name ?? '';
-        } else if (student && typeof student === 'object') {
-          firstName = student.first_name ?? '';
-        }
-        setStudentName(firstName);
-        if (firstName) {
-          await AsyncStorage.setItem('student_first_name', firstName);
+        // Not in AsyncStorage, check network
+        const netState = await NetInfo.fetch();
+        if (netState.isConnected) {
+          // Fetch from API
+          const firstName = await getStudentFirstName();
+          setStudentName(firstName);
+          if (firstName) {
+            await AsyncStorage.setItem('student_first_name', firstName);
+          }
+        } else {
+          // Offline and not in AsyncStorage
+          setStudentName('');
         }
       } catch (error) {
         console.error('Error fetching student data:', error);
+        setStudentName('');
       }
     };
 
@@ -52,6 +55,5 @@ const Header: React.FC = () => {
     </View>
   );
 };
-
 
 export default Header;

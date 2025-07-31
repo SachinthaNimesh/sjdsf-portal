@@ -6,9 +6,10 @@ import styles from './Layout.styles';
 
 type Props = {
   children: React.ReactNode;
+  hideHeader?: boolean; // add prop
 };
 
-const Layout: React.FC<Props> = ({ children }) => {
+const Layout: React.FC<Props> = ({ children, hideHeader }) => {
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -17,7 +18,7 @@ const Layout: React.FC<Props> = ({ children }) => {
         end={{ x: 1, y: 1 }}
         style={styles.background}
       />
-      <Header />
+      {!hideHeader && <Header />}
       <View style={styles.content}>
         {children}
       </View>

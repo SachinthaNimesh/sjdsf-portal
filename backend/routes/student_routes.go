@@ -8,14 +8,12 @@ import (
 
 func RegisterStudentRoutes(router *mux.Router) {
 	router.HandleFunc("/get-students", controllers.GetStudents).Methods("GET")
-	// router.HandleFunc("/post-student", controllers.CreateStudent).Methods("POST")
-	// RegisterEmployeeRoutes sets up the employee routes using Gorilla Mux
 
 	router.HandleFunc("/create-employee", controllers.CreateStudent).Methods("POST")
 	router.HandleFunc("/update-employee", controllers.UpdateStudent).Methods("PUT")
 	router.HandleFunc("/delete-employee", controllers.DeleteStudent).Methods("DELETE")
 
-	router.HandleFunc("/get-student", controllers.GetStudent).Methods("GET") // set to student
+	router.HandleFunc("/get-student", controllers.GetStudent).Methods("GET")
 
 	//supervisor routes
 	router.HandleFunc("/get-supervisors", controllers.GetSupervisors).Methods("GET")
@@ -51,4 +49,8 @@ func RegisterStudentRoutes(router *mux.Router) {
 
 	// Manager feedback route
 	router.HandleFunc("/manager-feedback", controllers.FetchManagerFeedback).Methods("GET")
+
+	// Emergency contact routes
+	router.HandleFunc("/get-emergency-contact", controllers.GetEmergencyContact).Methods("GET")
+	router.HandleFunc("/update-emergency-contact", controllers.UpdateEmergencyContact).Methods("POST")
 }

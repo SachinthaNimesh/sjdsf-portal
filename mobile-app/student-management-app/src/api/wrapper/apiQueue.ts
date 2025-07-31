@@ -76,14 +76,14 @@ export const flushQueue = async () => {
       try {
         await sendRequest(req);
       } catch (error) {
-        console.error("Error processing queued request:", error);
+        // console.error("Error processing queued request:", error);
         // Keep failed requests in the new queue
         newQueue.push(req);
       }
     }
     await AsyncStorage.setItem(QUEUE_KEY, JSON.stringify(newQueue));
   } catch (error) {
-    console.error("Error flushing queue:", error);
+    // console.error("Error flushing queue:", error);
   } finally {
     isFlushing = false;
   }
