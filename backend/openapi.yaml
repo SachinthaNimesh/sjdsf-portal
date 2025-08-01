@@ -1025,7 +1025,8 @@ paths:
       summary: Get the current emergency contact phone number
       tags:
         - emergency_contact
-      security: [] # Unprotected endpoint
+      security: []
+      x-wso2-disable-security: true
       responses:
         '200':
           description: Emergency contact found
