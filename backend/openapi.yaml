@@ -1020,6 +1020,87 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+  /get-emergency-contact:
+    get:
+      summary: Get the current emergency contact phone number
+      tags:
+        - emergency_contact
+      security: [] # Unprotected endpoint
+      responses:
+        '200':
+          description: Emergency contact found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  phone_number:
+                    type: string
+        '404':
+          description: No emergency contact found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+
+  /update-emergency-contact:
+    post:
+      summary: Update the emergency contact phone number
+      tags:
+        - emergency_contact
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone_number:
+                  type: string
+              required:
+                - phone_number
+      responses:
+        '200':
+          description: Emergency contact updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  phone_number:
+                    type: string
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
 
 components:
   securitySchemes:
